@@ -1,13 +1,13 @@
 <template>
   <div class="overflow-x-auto">
-    <table v-if="results.length" class="w-full text-sm">
+    <table v-if="results.length" class="w-full text-sm min-w-135">
       <thead>
         <tr class="border-b border-border-subtle text-left">
-          <th class="px-6 py-3 text-xs font-medium text-foreground-subtle uppercase tracking-wider">Time</th>
-          <th class="px-6 py-3 text-xs font-medium text-foreground-subtle uppercase tracking-wider">Status</th>
-          <th class="px-6 py-3 text-xs font-medium text-foreground-subtle uppercase tracking-wider">Code</th>
-          <th class="px-6 py-3 text-xs font-medium text-foreground-subtle uppercase tracking-wider">Response</th>
-          <th class="px-6 py-3 text-xs font-medium text-foreground-subtle uppercase tracking-wider">Error</th>
+          <th class="px-4 sm:px-6 py-3 text-xs font-medium text-foreground-subtle uppercase tracking-wider">Time</th>
+          <th class="px-4 sm:px-6 py-3 text-xs font-medium text-foreground-subtle uppercase tracking-wider">Status</th>
+          <th class="px-4 sm:px-6 py-3 text-xs font-medium text-foreground-subtle uppercase tracking-wider">Code</th>
+          <th class="px-4 sm:px-6 py-3 text-xs font-medium text-foreground-subtle uppercase tracking-wider">Response</th>
+          <th class="px-4 sm:px-6 py-3 text-xs font-medium text-foreground-subtle uppercase tracking-wider">Error</th>
         </tr>
       </thead>
       <tbody>
@@ -16,32 +16,32 @@
           :key="result.id"
           class="border-b border-border-subtle/50 hover:bg-surface-raised/50 transition-colors"
         >
-          <td class="px-6 py-3 text-foreground-muted whitespace-nowrap">
+          <td class="px-4 sm:px-6 py-3 text-foreground-muted whitespace-nowrap">
             {{ formatDate(result.executedAt) }}
           </td>
-          <td class="px-6 py-3">
+          <td class="px-4 sm:px-6 py-3">
             <DashboardStatusBadge :status="result.status" />
           </td>
-          <td class="px-6 py-3 font-mono text-foreground-muted">
-            {{ result.responseCode || '—' }}
+          <td class="px-4 sm:px-6 py-3 font-mono text-foreground-muted">
+            {{ result.responseCode || '\u2014' }}
           </td>
-          <td class="px-6 py-3 font-mono text-foreground-muted">
-            {{ result.responseTimeMs ? `${result.responseTimeMs}ms` : '—' }}
+          <td class="px-4 sm:px-6 py-3 font-mono text-foreground-muted whitespace-nowrap">
+            {{ result.responseTimeMs ? `${result.responseTimeMs}ms` : '\u2014' }}
           </td>
-          <td class="px-6 py-3 text-foreground-subtle max-w-xs truncate">
-            {{ result.errorMessage || '—' }}
+          <td class="px-4 sm:px-6 py-3 text-foreground-subtle max-w-xs truncate">
+            {{ result.errorMessage || '\u2014' }}
           </td>
         </tr>
       </tbody>
     </table>
 
     <!-- Empty -->
-    <div v-else class="px-6 py-12 text-center text-sm text-foreground-subtle">
+    <div v-else class="px-4 sm:px-6 py-12 text-center text-sm text-foreground-subtle">
       No check results yet. Results will appear after the first cron run.
     </div>
 
     <!-- Load More -->
-    <div v-if="results.length > displayCount" class="px-6 py-4 text-center border-t border-border-subtle/50">
+    <div v-if="results.length > displayCount" class="px-4 sm:px-6 py-4 text-center border-t border-border-subtle/50">
       <VButton variant="ghost" size="sm" @click="displayCount += 50">
         Load More
       </VButton>

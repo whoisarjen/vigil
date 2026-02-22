@@ -4,6 +4,7 @@ import {
   incidentUpdates,
   incidentMonitors,
   monitors,
+  statusPages,
 } from '~~/server/db/schema'
 
 export default defineEventHandler(async (event) => {
@@ -11,10 +12,22 @@ export default defineEventHandler(async (event) => {
   const db = useDB()
   const id = getRouterParam(event, 'id')!
 
-  // Get incident with ownership check
+  // Get incident with ownership check and status page title
   const [incident] = await db
-    .select()
+    .select({
+      id: incidents.id,
+      userId: incidents.userId,
+      statusPageId: incidents.statusPageId,
+      title: incidents.title,
+      status: incidents.status,
+      impact: incidents.impact,
+      createdAt: incidents.createdAt,
+      updatedAt: incidents.updatedAt,
+      resolvedAt: incidents.resolvedAt,
+      statusPageTitle: statusPages.title,
+    })
     .from(incidents)
+    .innerJoin(statusPages, eq(statusPages.id, incidents.statusPageId))
     .where(and(eq(incidents.id, id), eq(incidents.userId, user.id)))
 
   if (!incident) {

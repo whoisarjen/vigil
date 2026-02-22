@@ -62,15 +62,17 @@ export default defineEventHandler(async (event) => {
           ),
         )
 
-      const uptimePercent = uptimeData[0].total > 0
-        ? Number(((uptimeData[0].successful / uptimeData[0].total) * 100).toFixed(3))
+      const total = Number(uptimeData[0].total)
+      const successful = Number(uptimeData[0].successful)
+      const uptimePercent = total > 0
+        ? Number(((successful / total) * 100).toFixed(3))
         : null
 
       const currentStatus = latest
         ? latest.status === 'success' ? 'operational' : 'down'
         : 'unknown'
 
-      // Daily status for 90-day uptime bar
+      // Daily status for 90-day uptime bar, ordered by date ascending
       const dailyStatusRows = await db
         .select({
           date: sql<string>`to_char(${monitorResults.executedAt}, 'YYYY-MM-DD')`,
@@ -86,11 +88,31 @@ export default defineEventHandler(async (event) => {
           ),
         )
         .groupBy(sql`to_char(${monitorResults.executedAt}, 'YYYY-MM-DD')`)
+        .orderBy(sql`to_char(${monitorResults.executedAt}, 'YYYY-MM-DD')`)
 
-      const dailyStatus = dailyStatusRows.map((row) => ({
-        date: row.date,
-        status: row.failures > 0 ? 'failure' : 'success',
-      }))
+      const dailyStatus = dailyStatusRows.map((row) => {
+        const dayTotal = Number(row.total)
+        const daySuccessful = Number(row.successful)
+        const dayFailures = Number(row.failures)
+
+        let status: 'success' | 'failure' | 'degraded'
+        if (dayFailures === 0) {
+          status = 'success'
+        } else if (daySuccessful === 0) {
+          status = 'failure'
+        } else {
+          // Mix of successes and failures
+          status = dayFailures / dayTotal > 0.5 ? 'failure' : 'degraded'
+        }
+
+        return {
+          date: row.date,
+          status,
+          total: dayTotal,
+          successful: daySuccessful,
+          failures: dayFailures,
+        }
+      })
 
       return {
         id: m.monitorId,

@@ -4,7 +4,7 @@
     <DashboardSidebar />
 
     <!-- Main Content -->
-    <div class="flex-1 flex flex-col min-h-screen lg:pl-64">
+    <div class="flex-1 flex flex-col min-h-screen min-w-0 lg:pl-64">
       <!-- Page Content (pages render their own DashboardHeader) -->
       <main class="flex-1">
         <slot />

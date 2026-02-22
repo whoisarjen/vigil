@@ -10,7 +10,7 @@
       </template>
     </DashboardHeader>
 
-    <div class="p-6 lg:p-8 space-y-6">
+    <div class="p-4 sm:p-6 lg:p-8 space-y-6">
       <!-- Filter Tabs -->
       <div v-if="incidents?.length" class="flex items-center gap-1 p-1 bg-surface-raised rounded-[var(--radius-md)] w-fit">
         <button
@@ -19,7 +19,7 @@
           class="px-3 py-1.5 text-xs font-medium rounded-[var(--radius-sm)] transition-colors"
           :class="activeTab === tab.value
             ? 'bg-accent text-white shadow-sm'
-            : 'text-foreground-muted hover:text-foreground hover:bg-surface-raised'"
+            : 'text-foreground-muted hover:text-foreground hover:bg-surface-overlay'"
           @click="activeTab = tab.value"
         >
           {{ tab.label }}
@@ -37,7 +37,7 @@
 
       <!-- Loading -->
       <div v-if="status === 'pending'" class="space-y-3">
-        <div v-for="n in 4" :key="n" class="glass-card p-5 animate-pulse" style="transform: none">
+        <div v-for="n in 4" :key="n" class="glass-card-static p-5 animate-pulse">
           <div class="flex items-center gap-4">
             <div class="h-5 w-48 rounded bg-surface-raised" />
             <div class="h-5 w-20 rounded bg-surface-raised" />
@@ -52,8 +52,7 @@
           v-for="incident in filteredIncidents"
           :key="incident.id"
           :to="`/incidents/${incident.id}`"
-          class="glass-card p-5 block hover:border-accent/20 transition-colors group"
-          style="transform: none"
+          class="glass-card-static p-5 block hover:border-border-accent transition-colors group"
         >
           <div class="flex items-start justify-between gap-4">
             <div class="min-w-0 flex-1">
@@ -86,7 +85,7 @@
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="!incidents?.length" class="glass-card p-16 text-center space-y-4" style="transform: none">
+      <div v-else-if="!incidents?.length" class="glass-card-static p-16 text-center space-y-4">
         <div class="w-14 h-14 mx-auto rounded-full bg-accent/10 flex items-center justify-center">
           <AlertTriangle class="w-7 h-7 text-accent-light" />
         </div>
@@ -103,7 +102,7 @@
       </div>
 
       <!-- Empty filtered state -->
-      <div v-else class="glass-card p-12 text-center space-y-2" style="transform: none">
+      <div v-else class="glass-card-static p-12 text-center space-y-2">
         <p class="text-sm text-foreground-muted">No {{ activeTab }} incidents found.</p>
       </div>
     </div>

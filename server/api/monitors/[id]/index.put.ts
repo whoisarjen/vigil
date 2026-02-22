@@ -1,4 +1,5 @@
 import { eq, and } from 'drizzle-orm'
+import { ZodError } from 'zod'
 import { monitors } from '~~/server/db/schema'
 
 export default defineEventHandler(async (event) => {
@@ -18,7 +19,19 @@ export default defineEventHandler(async (event) => {
   }
 
   // Validate
-  const parsed = updateMonitorSchema.parse(body)
+  let parsed
+  try {
+    parsed = updateMonitorSchema.parse(body)
+  } catch (err) {
+    if (err instanceof ZodError) {
+      const fieldErrors = err.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')
+      throw createError({
+        statusCode: 422,
+        statusMessage: `Validation failed: ${fieldErrors}`,
+      })
+    }
+    throw err
+  }
 
   // Update
   const [updated] = await db

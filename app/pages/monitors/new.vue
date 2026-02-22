@@ -4,7 +4,7 @@
       <template #title>New Monitor</template>
     </DashboardHeader>
 
-    <div class="p-6 lg:p-8 max-w-2xl">
+    <div class="p-4 sm:p-6 lg:p-8 max-w-2xl">
       <DashboardMonitorForm ref="formRef" @submit="handleCreate" />
     </div>
   </div>
@@ -25,7 +25,7 @@ async function handleCreate(data: Record<string, any>) {
     success('Monitor created successfully')
     navigateTo('/monitors')
   } catch (err: any) {
-    error(err.data?.statusMessage || 'Failed to create monitor')
+    error(err.data?.message || err.data?.statusMessage || 'Failed to create monitor')
     formRef.value?.setLoading(false)
   }
 }

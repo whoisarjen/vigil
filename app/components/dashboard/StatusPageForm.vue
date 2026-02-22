@@ -151,8 +151,12 @@ async function handleSubmit() {
 
   if (!form.title.trim()) { errors.value.title = 'Title is required'; return }
   if (!form.slug.trim()) { errors.value.slug = 'Slug is required'; return }
-  if (!/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/.test(form.slug)) {
-    errors.value.slug = 'Slug must contain only lowercase letters, numbers, and hyphens'
+  if (form.slug.length < 3) {
+    errors.value.slug = 'Slug must be at least 3 characters'
+    return
+  }
+  if (!/^[a-z0-9-]+$/.test(form.slug)) {
+    errors.value.slug = 'Slug must be lowercase alphanumeric with hyphens'
     return
   }
 

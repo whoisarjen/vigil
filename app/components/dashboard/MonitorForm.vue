@@ -160,11 +160,16 @@ async function handleSubmit() {
 
   loading.value = true
   emit('submit', {
-    ...form,
+    name: form.name,
+    url: form.url,
+    method: form.method,
+    expectedStatus: Number(form.expectedStatus),
+    timeoutMs: Number(form.timeoutMs),
+    scheduleInterval: Number(form.scheduleInterval),
+    enabled: form.enabled,
     headers: headersObj,
     body: form.body || null,
   })
-  // Parent handles loading state reset
 }
 
 defineExpose({ setLoading: (v: boolean) => { loading.value = v } })

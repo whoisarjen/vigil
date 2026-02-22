@@ -4,7 +4,7 @@
       <template #title>Edit Monitor</template>
     </DashboardHeader>
 
-    <div class="p-6 lg:p-8 max-w-2xl">
+    <div class="p-4 sm:p-6 lg:p-8 max-w-2xl">
       <div v-if="monitor">
         <DashboardMonitorForm
           ref="formRef"
@@ -21,7 +21,7 @@
           <div class="h-10 rounded-md bg-surface-raised" />
         </div>
       </div>
-      <div v-else class="glass-card p-12 text-center space-y-3" style="transform: none">
+      <div v-else class="glass-card-static p-12 text-center space-y-3">
         <p class="text-lg font-semibold text-foreground">Monitor not found</p>
         <VButton variant="secondary" @click="navigateTo('/monitors')">Back to Monitors</VButton>
       </div>
@@ -48,7 +48,7 @@ async function handleUpdate(data: Record<string, any>) {
     success('Monitor updated successfully')
     navigateTo(`/monitors/${id}`)
   } catch (err: any) {
-    error(err.data?.statusMessage || 'Failed to update monitor')
+    error(err.data?.message || err.data?.statusMessage || 'Failed to update monitor')
     formRef.value?.setLoading(false)
   }
 }

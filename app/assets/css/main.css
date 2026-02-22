@@ -106,13 +106,23 @@ body {
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-lg);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              translate 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-card:hover {
   border-color: var(--color-border-accent);
   box-shadow: var(--shadow-card-hover);
-  transform: translateY(-2px);
+  translate: 0 -2px;
+}
+
+.glass-card-static {
+  background: rgba(15, 15, 35, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
 }
 
 /* ============================================
@@ -186,18 +196,18 @@ body {
    ============================================ */
 
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; translate: 0 10px; }
+  to { opacity: 1; translate: 0 0; }
 }
 
 @keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; translate: 0 20px; }
+  to { opacity: 1; translate: 0 0; }
 }
 
 @keyframes scale-in {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from { opacity: 0; scale: 0.95; }
+  to { opacity: 1; scale: 1; }
 }
 
 @keyframes pulse-glow {
@@ -206,14 +216,17 @@ body {
 }
 
 .animate-fade-in {
+  opacity: 0;
   animation: fade-in 0.5s ease-out forwards;
 }
 
 .animate-fade-in-up {
+  opacity: 0;
   animation: fade-in-up 0.6s ease-out forwards;
 }
 
 .animate-scale-in {
+  opacity: 0;
   animation: scale-in 0.3s ease-out forwards;
 }
 
@@ -221,7 +234,8 @@ body {
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
-/* Stagger children */
+/* Stagger children — uses translate instead of transform to avoid
+   conflicting with glass-card:hover translate */
 .stagger > * {
   opacity: 0;
   animation: fade-in-up 0.5s ease-out forwards;
@@ -232,6 +246,18 @@ body {
 .stagger > *:nth-child(4) { animation-delay: 240ms; }
 .stagger > *:nth-child(5) { animation-delay: 320ms; }
 .stagger > *:nth-child(6) { animation-delay: 400ms; }
+
+/* Ensure animated elements with reduced-motion preference are immediately visible */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-fade-in-up,
+  .animate-scale-in,
+  .stagger > * {
+    opacity: 1;
+    animation: none;
+    translate: 0 0;
+  }
+}
 
 /* ============================================
    Scrollbar

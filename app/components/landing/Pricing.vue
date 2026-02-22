@@ -1,18 +1,18 @@
 <template>
-  <section id="pricing" class="py-24 sm:py-32 px-6">
+  <section id="pricing" class="py-20 sm:py-28 px-4 sm:px-6">
     <div class="max-w-4xl mx-auto">
-      <div class="text-center mb-16 space-y-4">
+      <div class="text-center mb-12 sm:mb-16 space-y-4">
         <h2 class="text-3xl sm:text-4xl font-bold tracking-tight">
           Simple, <span class="gradient-text">transparent</span> pricing
         </h2>
-        <p class="text-foreground-muted max-w-xl mx-auto text-lg">
+        <p class="text-foreground-muted max-w-xl mx-auto text-base sm:text-lg leading-relaxed">
           Start free. Upgrade when you need more.
         </p>
       </div>
 
-      <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto stagger">
+      <div class="grid md:grid-cols-2 gap-4 sm:gap-6 max-w-3xl mx-auto stagger">
         <!-- Free Plan -->
-        <div class="glass-card p-8 space-y-6" style="transform: none">
+        <div class="glass-card p-6 sm:p-8 flex flex-col" style="transform: none">
           <div>
             <h3 class="text-lg font-semibold text-foreground">Free</h3>
             <div class="mt-3 flex items-baseline gap-1">
@@ -20,21 +20,21 @@
               <span class="text-foreground-muted text-sm">/forever</span>
             </div>
           </div>
-          <ul class="space-y-3">
-            <li v-for="f in freePlanFeatures" :key="f" class="flex items-center gap-2.5 text-sm text-foreground-muted">
-              <Check class="w-4 h-4 text-success shrink-0" />
+          <ul class="mt-6 space-y-3 flex-1">
+            <li v-for="f in freePlanFeatures" :key="f" class="flex items-start gap-2.5 text-sm text-foreground-muted">
+              <Check class="w-4 h-4 text-success shrink-0 mt-0.5" />
               {{ f }}
             </li>
           </ul>
-          <VButton class="w-full" @click="navigateTo('/sign-in')">
+          <VButton class="w-full mt-6" @click="navigateTo('/sign-in')">
             Get Started
           </VButton>
         </div>
 
         <!-- Pro Plan -->
-        <div class="relative glass-card p-8 space-y-6 gradient-border" style="transform: none">
+        <div class="relative glass-card p-6 sm:p-8 flex flex-col gradient-border" style="transform: none">
           <!-- Coming Soon badge -->
-          <div class="absolute -top-3 left-1/2 -translate-x-1/2">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
             <VBadge variant="accent" pill>Coming Soon</VBadge>
           </div>
           <div>
@@ -44,13 +44,13 @@
               <span class="text-foreground-muted text-sm">/month</span>
             </div>
           </div>
-          <ul class="space-y-3">
-            <li v-for="f in proPlanFeatures" :key="f" class="flex items-center gap-2.5 text-sm text-foreground-muted">
-              <Check class="w-4 h-4 text-accent-light shrink-0" />
+          <ul class="mt-6 space-y-3 flex-1">
+            <li v-for="f in proPlanFeatures" :key="f" class="flex items-start gap-2.5 text-sm text-foreground-muted">
+              <Check class="w-4 h-4 text-accent-light shrink-0 mt-0.5" />
               {{ f }}
             </li>
           </ul>
-          <VButton variant="secondary" class="w-full" disabled>
+          <VButton variant="secondary" class="w-full mt-6" disabled>
             Join Waitlist
           </VButton>
         </div>

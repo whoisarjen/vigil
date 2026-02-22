@@ -42,7 +42,7 @@
             <div class="px-6 pb-6">
               <slot />
             </div>
-            <div v-if="$slots.footer" class="px-6 pb-6 pt-0 flex justify-end gap-3">
+            <div v-if="$slots.footer" class="px-6 pb-6 pt-4 flex justify-end gap-3 border-t border-border-subtle">
               <slot name="footer" />
             </div>
           </div>

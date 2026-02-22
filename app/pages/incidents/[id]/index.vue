@@ -19,33 +19,33 @@
     </DashboardHeader>
 
     <!-- Loading -->
-    <div v-if="status === 'pending'" class="p-6 lg:p-8 space-y-6">
+    <div v-if="status === 'pending'" class="p-4 sm:p-6 lg:p-8 space-y-6">
       <div class="flex items-center gap-4">
         <div class="h-5 w-48 rounded bg-surface-raised animate-pulse" />
         <div class="h-5 w-20 rounded bg-surface-raised animate-pulse" />
         <div class="h-5 w-16 rounded bg-surface-raised animate-pulse" />
       </div>
-      <div class="grid grid-cols-3 gap-4">
-        <div v-for="n in 3" :key="n" class="glass-card p-5 space-y-2 animate-pulse" style="transform: none">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div v-for="n in 3" :key="n" class="glass-card-static p-5 space-y-2 animate-pulse">
           <div class="h-3 w-16 rounded bg-surface-raised" />
           <div class="h-5 w-24 rounded bg-surface-raised" />
         </div>
       </div>
-      <div class="glass-card p-6 animate-pulse" style="transform: none">
+      <div class="glass-card-static p-6 animate-pulse">
         <div class="h-24 rounded bg-surface-raised" />
       </div>
     </div>
 
     <!-- Not Found -->
-    <div v-else-if="!data" class="p-6 lg:p-8">
-      <div class="glass-card p-12 text-center space-y-3" style="transform: none">
+    <div v-else-if="!data" class="p-4 sm:p-6 lg:p-8">
+      <div class="glass-card-static p-12 text-center space-y-3">
         <p class="text-lg font-semibold text-foreground">Incident not found</p>
         <p class="text-sm text-foreground-muted">This incident may have been deleted.</p>
         <VButton variant="secondary" @click="navigateTo('/incidents')">Back to Incidents</VButton>
       </div>
     </div>
 
-    <div v-else class="p-6 lg:p-8 space-y-6">
+    <div v-else class="p-4 sm:p-6 lg:p-8 space-y-6">
       <!-- Header Info -->
       <div class="flex items-center gap-3 flex-wrap">
         <VBadge :variant="incidentStatusVariant(data.status)" size="md" dot>
@@ -58,22 +58,22 @@
 
       <!-- Stats -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 stagger">
-        <div class="glass-card p-5 space-y-1" style="transform: none">
+        <div class="glass-card-static p-5 space-y-1">
           <p class="text-xs text-foreground-subtle uppercase tracking-wider">Created</p>
           <p class="text-sm font-semibold text-foreground">{{ formatDateTime(data.createdAt) }}</p>
         </div>
-        <div class="glass-card p-5 space-y-1" style="transform: none">
+        <div class="glass-card-static p-5 space-y-1">
           <p class="text-xs text-foreground-subtle uppercase tracking-wider">Last Updated</p>
           <p class="text-sm font-semibold text-foreground">{{ formatRelativeTime(data.updatedAt || data.createdAt) }}</p>
         </div>
-        <div class="glass-card p-5 space-y-1" style="transform: none">
+        <div class="glass-card-static p-5 space-y-1">
           <p class="text-xs text-foreground-subtle uppercase tracking-wider">Status Page</p>
           <p class="text-sm font-semibold text-foreground">{{ data.statusPageTitle || 'N/A' }}</p>
         </div>
       </div>
 
       <!-- Post Update -->
-      <div class="glass-card p-6 space-y-4" style="transform: none">
+      <div class="glass-card-static p-4 sm:p-6 space-y-4">
         <h3 class="text-base font-semibold text-foreground">Post Update</h3>
         <form class="space-y-4" @submit.prevent="handlePostUpdate">
           <div class="grid sm:grid-cols-2 gap-4">
@@ -86,7 +86,7 @@
           </div>
           <VTextarea
             v-model="updateForm.message"
-            label=""
+            label="Message"
             :rows="3"
             placeholder="Describe the update..."
           />
@@ -100,14 +100,14 @@
       </div>
 
       <!-- Timeline -->
-      <div class="glass-card overflow-hidden" style="transform: none">
-        <div class="px-6 py-4 border-b border-border-subtle">
+      <div class="glass-card-static overflow-hidden">
+        <div class="px-4 sm:px-6 py-4 border-b border-border-subtle">
           <h3 class="text-sm font-semibold text-foreground-muted uppercase tracking-wider">Update Timeline</h3>
         </div>
 
-        <div v-if="data.updates?.length" class="p-6 space-y-4">
+        <div v-if="data.updates?.length" class="p-4 sm:p-6 space-y-4">
           <div v-for="(update, i) in sortedUpdates" :key="i">
-            <div class="flex items-start gap-4">
+            <div class="flex items-start gap-3 sm:gap-4">
               <div class="mt-1 shrink-0">
                 <div
                   class="w-2.5 h-2.5 rounded-full"
@@ -127,13 +127,13 @@
           </div>
         </div>
 
-        <div v-else class="px-6 py-8 text-center text-sm text-foreground-subtle">
+        <div v-else class="px-4 sm:px-6 py-8 text-center text-sm text-foreground-subtle">
           No updates yet. Post the first update above.
         </div>
       </div>
 
       <!-- Affected Monitors -->
-      <div v-if="data.affectedMonitors?.length" class="glass-card p-6 space-y-4" style="transform: none">
+      <div v-if="data.affectedMonitors?.length" class="glass-card-static p-4 sm:p-6 space-y-4">
         <h3 class="text-sm font-semibold text-foreground-muted uppercase tracking-wider">Affected Monitors</h3>
         <div class="space-y-2">
           <div
@@ -142,8 +142,7 @@
             class="flex items-center gap-3 p-3 rounded-[var(--radius-md)] bg-surface-raised/50"
           >
             <span
-              class="w-2 h-2 rounded-full shrink-0"
-              :class="statusDotColor(monitor.latestStatus || null)"
+              class="w-2 h-2 rounded-full shrink-0 bg-foreground-subtle"
             />
             <span class="text-sm font-medium text-foreground">{{ monitor.name }}</span>
           </div>
@@ -177,7 +176,7 @@ definePageMeta({
 const route = useRoute()
 const id = route.params.id as string
 const { success, error } = useToast()
-const { incidentStatusVariant, incidentImpactVariant, statusDotColor } = useStatusColor()
+const { incidentStatusVariant, incidentImpactVariant } = useStatusColor()
 
 const showDelete = ref(false)
 const deleting = ref(false)

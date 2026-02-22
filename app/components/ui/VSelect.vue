@@ -19,7 +19,7 @@
         'pr-10',
         props.class,
       )"
-      @change="$emit('update:modelValue', ($event.target as HTMLSelectElement).value)"
+      @change="handleChange($event)"
     >
       <option v-if="placeholder" value="" disabled>{{ placeholder }}</option>
       <slot />
@@ -38,9 +38,20 @@ const props = defineProps<{
   class?: string
 }>()
 
-defineEmits<{
-  'update:modelValue': [value: string]
+const emit = defineEmits<{
+  'update:modelValue': [value: string | number]
 }>()
 
 const selectId = useId()
+
+function handleChange(event: Event) {
+  const raw = (event.target as HTMLSelectElement).value
+  // If the current modelValue is a number, coerce the emitted value to a number
+  if (typeof props.modelValue === 'number') {
+    const num = Number(raw)
+    emit('update:modelValue', isNaN(num) ? raw : num)
+  } else {
+    emit('update:modelValue', raw)
+  }
+}
 </script>

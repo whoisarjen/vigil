@@ -4,29 +4,29 @@
       <template #title>Settings</template>
     </DashboardHeader>
 
-    <div class="p-6 lg:p-8 max-w-2xl space-y-8">
+    <div class="p-4 sm:p-6 lg:p-8 max-w-2xl space-y-8">
       <!-- Profile -->
-      <div class="glass-card p-6 space-y-4" style="transform: none">
+      <div class="glass-card-static p-4 sm:p-6 space-y-4">
         <h3 class="text-sm font-semibold text-foreground-muted uppercase tracking-wider">Profile</h3>
         <div class="flex items-center gap-4">
           <img
             v-if="session?.user?.image"
             :src="session.user.image"
             :alt="session.user.name || 'User'"
-            class="w-14 h-14 rounded-full border border-border-subtle"
+            class="w-14 h-14 rounded-full border border-border-subtle shrink-0"
           />
-          <div v-else class="w-14 h-14 rounded-full bg-accent/20 flex items-center justify-center text-xl font-bold text-accent-light">
+          <div v-else class="w-14 h-14 rounded-full bg-accent/20 flex items-center justify-center text-xl font-bold text-accent-light shrink-0">
             {{ session?.user?.name?.charAt(0) || '?' }}
           </div>
-          <div>
-            <p class="text-lg font-semibold text-foreground">{{ session?.user?.name || 'User' }}</p>
-            <p class="text-sm text-foreground-muted">{{ session?.user?.email }}</p>
+          <div class="min-w-0">
+            <p class="text-lg font-semibold text-foreground truncate">{{ session?.user?.name || 'User' }}</p>
+            <p class="text-sm text-foreground-muted truncate">{{ session?.user?.email }}</p>
           </div>
         </div>
       </div>
 
       <!-- Plan & Usage -->
-      <div class="glass-card p-6 space-y-4" style="transform: none">
+      <div class="glass-card-static p-4 sm:p-6 space-y-4">
         <div class="flex items-center justify-between">
           <h3 class="text-sm font-semibold text-foreground-muted uppercase tracking-wider">Plan & Usage</h3>
           <VBadge variant="accent">{{ currentPlan.name }}</VBadge>
@@ -56,7 +56,7 @@
       </div>
 
       <!-- Danger Zone -->
-      <div class="rounded-[var(--radius-lg)] border border-danger/20 bg-danger-muted/30 p-6 space-y-4">
+      <div class="rounded-[var(--radius-lg)] border border-danger/20 bg-danger-muted/30 p-4 sm:p-6 space-y-4">
         <h3 class="text-sm font-semibold text-danger uppercase tracking-wider">Danger Zone</h3>
         <p class="text-sm text-foreground-muted">
           Permanently delete your account and all associated data. This action cannot be undone.

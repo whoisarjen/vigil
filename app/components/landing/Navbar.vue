@@ -1,12 +1,12 @@
 <template>
   <nav class="fixed top-0 inset-x-0 z-50 h-16 border-b border-border-subtle/50">
     <div class="absolute inset-0 bg-background/80 backdrop-blur-xl" />
-    <div class="relative max-w-7xl mx-auto h-full px-6 flex items-center justify-between">
+    <div class="relative max-w-7xl mx-auto h-full px-4 sm:px-6 flex items-center justify-between">
       <!-- Logo -->
       <Logo />
 
-      <!-- Desktop Nav -->
-      <div class="hidden md:flex items-center gap-8">
+      <!-- Desktop Nav — centered via absolute positioning -->
+      <div class="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
         <a href="#features" class="text-sm text-foreground-muted hover:text-foreground transition-colors">Features</a>
         <a href="#pricing" class="text-sm text-foreground-muted hover:text-foreground transition-colors">Pricing</a>
         <a href="https://github.com" target="_blank" class="text-sm text-foreground-muted hover:text-foreground transition-colors">GitHub</a>
@@ -24,27 +24,43 @@
 
       <!-- Mobile Menu Button -->
       <button
-        class="md:hidden text-foreground-muted hover:text-foreground p-2"
+        class="md:hidden relative z-10 text-foreground-muted hover:text-foreground p-2 -mr-2"
         @click="menuOpen = !menuOpen"
+        aria-label="Toggle menu"
       >
         <svg v-if="!menuOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
         <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
       </button>
     </div>
 
+    <!-- Mobile Menu Backdrop -->
+    <Transition
+      enter-active-class="transition-opacity duration-200"
+      leave-active-class="transition-opacity duration-150"
+      enter-from-class="opacity-0"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="menuOpen"
+        class="md:hidden fixed inset-0 top-16 bg-black/40 backdrop-blur-sm"
+        @click="menuOpen = false"
+      />
+    </Transition>
+
     <!-- Mobile Menu -->
     <Transition
-      enter-active-class="transition-all duration-200"
-      leave-active-class="transition-all duration-150"
+      enter-active-class="transition-all duration-200 ease-out"
+      leave-active-class="transition-all duration-150 ease-in"
       enter-from-class="opacity-0 -translate-y-2"
       leave-to-class="opacity-0 -translate-y-2"
     >
-      <div v-if="menuOpen" class="md:hidden absolute top-16 inset-x-0 bg-surface border-b border-border p-4 space-y-4">
-        <a href="#features" class="block text-sm text-foreground-muted hover:text-foreground" @click="menuOpen = false">Features</a>
-        <a href="#pricing" class="block text-sm text-foreground-muted hover:text-foreground" @click="menuOpen = false">Pricing</a>
-        <a href="https://github.com" target="_blank" class="block text-sm text-foreground-muted hover:text-foreground">GitHub</a>
-        <div class="pt-2 border-t border-border-subtle">
-          <VButton class="w-full" size="sm" @click="navigateTo('/sign-in')">Get Started</VButton>
+      <div v-if="menuOpen" class="md:hidden absolute top-16 inset-x-0 bg-surface/95 backdrop-blur-xl border-b border-border-subtle p-4 space-y-3">
+        <a href="#features" class="block px-3 py-2 rounded-[var(--radius-md)] text-sm text-foreground-muted hover:text-foreground hover:bg-surface-raised/50 transition-colors" @click="menuOpen = false">Features</a>
+        <a href="#pricing" class="block px-3 py-2 rounded-[var(--radius-md)] text-sm text-foreground-muted hover:text-foreground hover:bg-surface-raised/50 transition-colors" @click="menuOpen = false">Pricing</a>
+        <a href="https://github.com" target="_blank" class="block px-3 py-2 rounded-[var(--radius-md)] text-sm text-foreground-muted hover:text-foreground hover:bg-surface-raised/50 transition-colors">GitHub</a>
+        <div class="pt-3 mt-1 border-t border-border-subtle/50 flex flex-col gap-2">
+          <VButton variant="ghost" class="w-full justify-center" size="sm" @click="navigateTo('/sign-in')">Sign In</VButton>
+          <VButton class="w-full justify-center" size="sm" @click="navigateTo('/sign-in')">Get Started</VButton>
         </div>
       </div>
     </Transition>

@@ -1,12 +1,12 @@
 <template>
-  <section class="relative min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-16 overflow-hidden">
+  <section class="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 pt-28 pb-20 overflow-hidden">
     <!-- Background glow -->
     <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-accent/8 rounded-full blur-[120px] pointer-events-none" />
 
     <!-- Animated gradient orb behind heading -->
     <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none animate-pulse-glow" style="background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(168, 85, 247, 0.08) 40%, transparent 70%); filter: blur(60px);" />
 
-    <div class="relative max-w-4xl mx-auto text-center space-y-8 animate-fade-in-up">
+    <div class="relative max-w-4xl mx-auto text-center space-y-6 sm:space-y-8 animate-fade-in-up">
       <!-- Pill Badge -->
       <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-accent/20 bg-accent/5 backdrop-blur-sm text-xs font-medium text-accent-light">
         <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
@@ -14,23 +14,23 @@
       </div>
 
       <!-- Heading -->
-      <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1]" style="text-shadow: 0 0 80px rgba(99, 102, 241, 0.3)">
+      <h1 class="text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight leading-[1.1]" style="text-shadow: 0 0 80px rgba(99, 102, 241, 0.3)">
         <span class="text-foreground">Your Status Page</span>
         <br />
         <span class="gradient-text">Open Source & Free</span>
       </h1>
 
       <!-- Subheading -->
-      <p class="text-lg sm:text-xl text-foreground-muted max-w-2xl mx-auto leading-relaxed">
+      <p class="text-base sm:text-lg lg:text-xl text-foreground-muted max-w-2xl mx-auto leading-relaxed">
         The open source alternative to Statuspage and BetterUptime. Monitor your services, track incidents, and share a beautiful public status page — all for free.
       </p>
 
       <!-- CTAs -->
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-        <VButton size="lg" @click="navigateTo('/sign-in')">
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-2">
+        <VButton size="lg" class="w-full sm:w-auto" @click="navigateTo('/sign-in')">
           Start For Free
         </VButton>
-        <VButton variant="outline" size="lg">
+        <VButton variant="outline" size="lg" class="w-full sm:w-auto">
           <Github class="w-4 h-4" />
           View on GitHub
         </VButton>
@@ -38,19 +38,19 @@
     </div>
 
     <!-- Dashboard Mockup -->
-    <div class="relative mt-16 sm:mt-20 w-full max-w-5xl mx-auto animate-fade-in-up" style="animation-delay: 200ms">
+    <div class="relative mt-12 sm:mt-20 w-full max-w-5xl mx-auto animate-fade-in-up" style="animation-delay: 200ms">
       <!-- Glow behind mockup -->
       <div class="absolute -inset-4 bg-accent/5 rounded-[var(--radius-xl)] blur-2xl pointer-events-none" />
 
-      <div class="relative glass-card overflow-hidden p-1">
+      <div class="relative glass-card overflow-hidden p-0.5 sm:p-1" style="transform: none">
         <!-- Fake browser bar -->
-        <div class="flex items-center gap-2 px-4 py-3 border-b border-border-subtle/50">
+        <div class="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 border-b border-border-subtle/50">
           <div class="flex gap-1.5">
-            <div class="w-2.5 h-2.5 rounded-full bg-danger/60" />
-            <div class="w-2.5 h-2.5 rounded-full bg-warning/60" />
-            <div class="w-2.5 h-2.5 rounded-full bg-success/60" />
+            <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-danger/60" />
+            <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-warning/60" />
+            <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-success/60" />
           </div>
-          <div class="flex-1 mx-4">
+          <div class="flex-1 mx-2 sm:mx-4">
             <div class="max-w-xs mx-auto h-5 bg-surface-raised rounded-[var(--radius-sm)] flex items-center justify-center">
               <span class="text-[10px] text-foreground-subtle font-mono">vigil.dev/dashboard</span>
             </div>
@@ -58,12 +58,12 @@
         </div>
 
         <!-- Fake Dashboard Content -->
-        <div class="p-6 space-y-4">
+        <div class="p-3 sm:p-6 space-y-3 sm:space-y-4">
           <!-- Stats Row -->
-          <div class="grid grid-cols-4 gap-3">
-            <div v-for="stat in mockStats" :key="stat.label" class="bg-surface/60 rounded-[var(--radius-md)] p-3 border border-border-subtle/30">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+            <div v-for="stat in mockStats" :key="stat.label" class="bg-surface/60 rounded-[var(--radius-md)] p-2.5 sm:p-3 border border-border-subtle/30">
               <p class="text-[10px] text-foreground-subtle uppercase tracking-wider">{{ stat.label }}</p>
-              <p class="text-lg font-bold mt-0.5" :class="stat.color">{{ stat.value }}</p>
+              <p class="text-base sm:text-lg font-bold mt-0.5" :class="stat.color">{{ stat.value }}</p>
             </div>
           </div>
 
@@ -72,14 +72,14 @@
             <div
               v-for="monitor in mockMonitors"
               :key="monitor.name"
-              class="group flex items-center justify-between bg-surface/40 hover:bg-surface-raised/30 rounded-[var(--radius-md)] px-4 py-3 border border-border-subtle/20 transition-colors"
+              class="group flex items-center justify-between bg-surface/40 hover:bg-surface-raised/30 rounded-[var(--radius-md)] px-3 sm:px-4 py-2.5 sm:py-3 border border-border-subtle/20 transition-colors"
             >
-              <div class="flex items-center gap-3">
-                <div class="w-2 h-2 rounded-full" :class="monitor.dotColor" />
-                <span class="text-sm font-medium text-foreground">{{ monitor.name }}</span>
-                <span class="text-xs font-mono text-foreground-subtle hidden sm:inline">{{ monitor.url }}</span>
+              <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                <div class="w-2 h-2 rounded-full shrink-0" :class="monitor.dotColor" />
+                <span class="text-xs sm:text-sm font-medium text-foreground truncate">{{ monitor.name }}</span>
+                <span class="text-xs font-mono text-foreground-subtle hidden lg:inline">{{ monitor.url }}</span>
               </div>
-              <div class="flex items-center gap-4">
+              <div class="flex items-center gap-3 sm:gap-4 shrink-0 ml-3">
                 <!-- Mini uptime bars -->
                 <div class="hidden sm:flex items-end gap-0.5 h-4">
                   <div
@@ -99,7 +99,7 @@
     </div>
 
     <!-- Scroll indicator -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-foreground-subtle">
+    <div class="mt-10 sm:mt-12 animate-bounce text-foreground-subtle">
       <ChevronDown class="w-5 h-5" />
     </div>
   </section>

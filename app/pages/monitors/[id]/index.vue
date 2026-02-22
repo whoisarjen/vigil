@@ -23,51 +23,51 @@
     </DashboardHeader>
 
     <!-- Loading -->
-    <div v-if="status === 'pending'" class="p-6 lg:p-8 space-y-8">
+    <div v-if="status === 'pending'" class="p-4 sm:p-6 lg:p-8 space-y-8">
       <div class="flex items-center gap-4">
         <div class="w-3 h-3 rounded-full bg-surface-raised animate-pulse" />
         <div class="h-5 w-20 rounded bg-surface-raised animate-pulse" />
         <div class="h-4 w-48 rounded bg-surface-raised animate-pulse" />
       </div>
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div v-for="n in 4" :key="n" class="glass-card p-5 space-y-2 animate-pulse" style="transform: none">
+        <div v-for="n in 4" :key="n" class="glass-card-static p-5 space-y-2 animate-pulse">
           <div class="h-3 w-16 rounded bg-surface-raised" />
           <div class="h-7 w-24 rounded bg-surface-raised" />
         </div>
       </div>
-      <div class="glass-card p-6 animate-pulse" style="transform: none">
+      <div class="glass-card-static p-6 animate-pulse">
         <div class="h-3 w-32 rounded bg-surface-raised mb-4" />
         <div class="h-32 rounded bg-surface-raised" />
       </div>
     </div>
 
     <!-- Error / Not Found -->
-    <div v-else-if="!data" class="p-6 lg:p-8">
-      <div class="glass-card p-12 text-center space-y-3" style="transform: none">
+    <div v-else-if="!data" class="p-4 sm:p-6 lg:p-8">
+      <div class="glass-card-static p-12 text-center space-y-3">
         <p class="text-lg font-semibold text-foreground">Monitor not found</p>
         <p class="text-sm text-foreground-muted">This monitor may have been deleted.</p>
         <VButton variant="secondary" @click="navigateTo('/monitors')">Back to Monitors</VButton>
       </div>
     </div>
 
-    <div v-else class="p-6 lg:p-8 space-y-8">
+    <div v-else class="p-4 sm:p-6 lg:p-8 space-y-8">
       <!-- Status Bar -->
-      <div class="flex items-center gap-4 flex-wrap">
+      <div class="flex items-center gap-3 sm:gap-4 flex-wrap">
         <span
-          class="w-3 h-3 rounded-full"
+          class="w-3 h-3 rounded-full shrink-0"
           :class="statusDotColor(data.results?.[0]?.status)"
         />
         <DashboardStatusBadge
           v-if="data.results?.[0]"
           :status="data.results[0].status"
         />
-        <span class="text-sm text-foreground-muted font-mono truncate max-w-xs sm:max-w-md">{{ data.url }}</span>
+        <span class="text-sm text-foreground-muted font-mono truncate max-w-50 sm:max-w-xs md:max-w-md">{{ data.url }}</span>
         <VBadge size="sm">{{ data.method }}</VBadge>
       </div>
 
       <!-- Stats -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 stagger">
-        <div class="glass-card p-5 space-y-1 hover:border-accent/10 transition-all" style="transform: none">
+        <div class="glass-card-static p-5 space-y-1">
           <p class="text-xs text-foreground-subtle uppercase tracking-wider">Uptime</p>
           <p
             class="text-2xl font-bold"
@@ -76,17 +76,17 @@
             {{ data.stats.uptimePercent !== null ? `${data.stats.uptimePercent.toFixed(1)}%` : 'N/A' }}
           </p>
         </div>
-        <div class="glass-card p-5 space-y-1 hover:border-accent/10 transition-all" style="transform: none">
+        <div class="glass-card-static p-5 space-y-1">
           <p class="text-xs text-foreground-subtle uppercase tracking-wider">Avg Response</p>
           <p class="text-2xl font-bold text-foreground">
             {{ data.stats.avgResponseTime ? formatResponseTime(data.stats.avgResponseTime) : 'N/A' }}
           </p>
         </div>
-        <div class="glass-card p-5 space-y-1 hover:border-accent/10 transition-all" style="transform: none">
+        <div class="glass-card-static p-5 space-y-1">
           <p class="text-xs text-foreground-subtle uppercase tracking-wider">Total Checks</p>
           <p class="text-2xl font-bold text-foreground">{{ data.stats.totalChecks }}</p>
         </div>
-        <div class="glass-card p-5 space-y-1 hover:border-accent/10 transition-all" style="transform: none">
+        <div class="glass-card-static p-5 space-y-1">
           <p class="text-xs text-foreground-subtle uppercase tracking-wider">Last Checked</p>
           <p class="text-2xl font-bold text-foreground">
             {{ data.stats.lastChecked ? timeAgo(data.stats.lastChecked) : 'Never' }}
@@ -95,14 +95,14 @@
       </div>
 
       <!-- Uptime Chart -->
-      <div class="glass-card p-6" style="transform: none">
+      <div class="glass-card-static p-4 sm:p-6">
         <h3 class="text-sm font-semibold text-foreground-muted uppercase tracking-wider mb-4">Response Time (7 days)</h3>
         <DashboardUptimeChart :results="data.results || []" />
       </div>
 
       <!-- History Table -->
-      <div class="glass-card overflow-hidden" style="transform: none">
-        <div class="px-6 py-4 border-b border-border-subtle">
+      <div class="glass-card-static overflow-hidden">
+        <div class="px-4 sm:px-6 py-4 border-b border-border-subtle">
           <h3 class="text-sm font-semibold text-foreground-muted uppercase tracking-wider">Check History</h3>
         </div>
         <DashboardHistoryTimeline :results="data.results || []" />
@@ -149,7 +149,7 @@ async function handleDelete() {
     success('Monitor deleted')
     navigateTo('/monitors')
   } catch (err: any) {
-    error(err.data?.statusMessage || 'Failed to delete')
+    error(err.data?.message || err.data?.statusMessage || 'Failed to delete')
     deleting.value = false
   }
 }

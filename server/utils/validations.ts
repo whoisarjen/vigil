@@ -10,7 +10,7 @@ export const createMonitorSchema = z.object({
     v => [15, 30, 60, 120, 360, 720, 1440].includes(v),
     'Invalid schedule interval',
   ),
-  headers: z.record(z.string()).optional().default({}),
+  headers: z.record(z.string(), z.string()).optional().default({}),
   body: z.string().optional().nullable(),
   enabled: z.coerce.boolean().default(true),
 })

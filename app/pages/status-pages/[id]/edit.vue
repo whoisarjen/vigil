@@ -18,7 +18,7 @@
       </template>
     </DashboardHeader>
 
-    <div class="p-6 lg:p-8 max-w-2xl">
+    <div class="p-4 sm:p-6 lg:p-8 max-w-2xl">
       <div v-if="pageData">
         <DashboardStatusPageForm
           ref="formRef"
@@ -33,7 +33,7 @@
         <div class="h-20 rounded-md bg-surface-raised" />
         <div class="h-10 rounded-md bg-surface-raised" />
       </div>
-      <div v-else class="glass-card p-12 text-center space-y-3" style="transform: none">
+      <div v-else class="glass-card-static p-12 text-center space-y-3">
         <p class="text-lg font-semibold text-foreground">Status page not found</p>
         <VButton variant="secondary" @click="navigateTo('/status-pages')">Back to Status Pages</VButton>
       </div>
@@ -87,9 +87,11 @@ async function handleDelete() {
   try {
     await $fetch(`/api/status-pages/${id}`, { method: 'DELETE' })
     success('Status page deleted')
+    showDelete.value = false
     navigateTo('/status-pages')
   } catch (err: any) {
     error(err.data?.statusMessage || 'Failed to delete')
+  } finally {
     deleting.value = false
   }
 }

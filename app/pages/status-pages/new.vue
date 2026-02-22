@@ -4,7 +4,7 @@
       <template #title>New Status Page</template>
     </DashboardHeader>
 
-    <div class="p-6 lg:p-8 max-w-2xl">
+    <div class="p-4 sm:p-6 lg:p-8 max-w-2xl">
       <DashboardStatusPageForm ref="formRef" @submit="handleCreate" />
     </div>
   </div>

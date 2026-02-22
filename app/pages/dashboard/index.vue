@@ -15,9 +15,9 @@
       </template>
     </DashboardHeader>
 
-    <div class="p-6 lg:p-8 space-y-8">
+    <div class="p-4 sm:p-6 lg:p-8 space-y-8">
       <!-- Status Page Banner -->
-      <div v-if="statusPages?.length" class="glass-card p-5 flex items-center justify-between gap-4" style="transform: none">
+      <div v-if="statusPages?.length" class="glass-card-static p-5 flex items-center justify-between gap-4">
         <div class="flex items-center gap-3 min-w-0">
           <div class="w-9 h-9 rounded-[var(--radius-md)] bg-accent/10 flex items-center justify-center shrink-0">
             <Globe class="w-4.5 h-4.5 text-accent-light" />
@@ -45,8 +45,7 @@
       </div>
       <div
         v-else-if="statusPagesStatus !== 'pending'"
-        class="glass-card p-5 flex items-center justify-between gap-4 border-dashed"
-        style="transform: none"
+        class="glass-card-static p-5 flex items-center justify-between gap-4 border-dashed"
       >
         <div class="flex items-center gap-3">
           <div class="w-9 h-9 rounded-[var(--radius-md)] bg-surface-raised flex items-center justify-center shrink-0">
@@ -61,7 +60,7 @@
 
       <!-- Stats Cards -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 stagger">
-        <div v-for="stat in stats" :key="stat.label" class="glass-card p-5 space-y-1 hover:border-accent/10 transition-colors" style="transform: none">
+        <div v-for="stat in stats" :key="stat.label" class="glass-card-static p-5 space-y-1">
           <p class="text-xs text-foreground-subtle uppercase tracking-wider">{{ stat.label }}</p>
           <p class="text-2xl font-bold" :class="stat.color">{{ stat.value }}</p>
         </div>
@@ -79,7 +78,7 @@
 
         <!-- Loading -->
         <div v-if="status === 'pending'" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
-          <div v-for="n in 3" :key="n" class="glass-card p-5 space-y-3 animate-pulse" style="transform: none">
+          <div v-for="n in 3" :key="n" class="glass-card-static p-5 space-y-3 animate-pulse">
             <div class="flex items-center gap-2.5">
               <div class="w-2.5 h-2.5 rounded-full bg-surface-raised" />
               <div class="h-4 w-32 rounded bg-surface-raised" />
@@ -94,7 +93,7 @@
         </div>
 
         <!-- Empty State -->
-        <div v-else class="glass-card p-12 text-center space-y-4 border-dashed" style="transform: none">
+        <div v-else class="glass-card-static p-12 text-center space-y-4 border-dashed">
           <div class="w-12 h-12 mx-auto rounded-full bg-accent/10 flex items-center justify-center">
             <Activity class="w-6 h-6 text-accent-light" />
           </div>
@@ -148,7 +147,7 @@ async function handleRunChecks() {
     success(`Checked ${result.checked} monitor${result.checked !== 1 ? 's' : ''}`)
     await refresh()
   } catch (err: any) {
-    error(err.data?.statusMessage || 'Failed to run checks')
+    error(err.data?.message || err.data?.statusMessage || 'Failed to run checks')
   } finally {
     runningChecks.value = false
   }

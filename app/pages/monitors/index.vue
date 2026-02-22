@@ -10,10 +10,10 @@
       </template>
     </DashboardHeader>
 
-    <div class="p-6 lg:p-8">
+    <div class="p-4 sm:p-6 lg:p-8">
       <!-- Loading -->
       <div v-if="status === 'pending'" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
-        <div v-for="n in 3" :key="n" class="glass-card p-5 space-y-3 animate-pulse" style="transform: none">
+        <div v-for="n in 3" :key="n" class="glass-card-static p-5 space-y-3 animate-pulse">
           <div class="flex items-center gap-2.5">
             <div class="w-2.5 h-2.5 rounded-full bg-surface-raised" />
             <div class="h-4 w-32 rounded bg-surface-raised" />
@@ -28,7 +28,7 @@
       </div>
 
       <!-- Empty State -->
-      <div v-else class="glass-card p-16 text-center space-y-4" style="transform: none">
+      <div v-else class="glass-card-static p-16 text-center space-y-4">
         <div class="w-14 h-14 mx-auto rounded-full bg-accent/10 flex items-center justify-center">
           <Activity class="w-7 h-7 text-accent-light" />
         </div>

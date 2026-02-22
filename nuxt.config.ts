@@ -8,6 +8,26 @@ export default defineNuxtConfig({
 
   modules: ['nuxt-auth-utils'],
 
+  components: [
+    {
+      path: '~/components/ui',
+      pathPrefix: false,
+    },
+    {
+      path: '~/components/dashboard',
+      prefix: 'Dashboard',
+    },
+    {
+      path: '~/components/landing',
+      prefix: 'Landing',
+    },
+    {
+      path: '~/components',
+      pathPrefix: false,
+      pattern: '*.vue',
+    },
+  ],
+
   css: ['~/assets/css/main.css'],
 
   vite: {

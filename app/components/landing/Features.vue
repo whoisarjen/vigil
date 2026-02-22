@@ -1,25 +1,25 @@
 <template>
-  <section id="features" class="py-24 sm:py-32 px-6">
+  <section id="features" class="py-20 sm:py-28 px-4 sm:px-6">
     <div class="max-w-7xl mx-auto">
       <!-- Header -->
-      <div class="text-center mb-16 space-y-4">
+      <div class="text-center mb-12 sm:mb-16 space-y-4">
         <h2 class="text-3xl sm:text-4xl font-bold tracking-tight">
           Everything you need to
           <span class="gradient-text">stay informed</span>
         </h2>
-        <p class="text-foreground-muted max-w-xl mx-auto text-lg">
+        <p class="text-foreground-muted max-w-xl mx-auto text-base sm:text-lg leading-relaxed">
           Everything you need to keep users informed about your service health.
         </p>
       </div>
 
       <!-- Features Grid -->
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 stagger">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 stagger">
         <div
           v-for="feature in features"
           :key="feature.title"
-          class="glass-card p-8 space-y-4"
+          class="glass-card p-6 sm:p-8 flex flex-col gap-4"
         >
-          <div class="relative w-12 h-12 rounded-[var(--radius-lg)] bg-accent/10 flex items-center justify-center">
+          <div class="relative w-12 h-12 rounded-[var(--radius-lg)] bg-accent/10 flex items-center justify-center shrink-0">
             <div class="absolute inset-0 rounded-[var(--radius-lg)] bg-accent/5 blur-lg pointer-events-none" />
             <component :is="feature.icon" class="relative w-5 h-5 text-accent-light" />
           </div>

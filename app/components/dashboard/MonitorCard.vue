@@ -1,20 +1,22 @@
 <template>
   <NuxtLink :to="`/monitors/${monitor.id}`" class="block group">
-    <div class="glass-card p-5 space-y-3 hover:border-accent/20 hover:shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all duration-200">
+    <div class="glass-card p-5 space-y-3">
       <!-- Top Row: Status + Name + Toggle -->
       <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2.5">
+        <div class="flex items-center gap-2.5 min-w-0">
           <span
             class="w-2.5 h-2.5 rounded-full shrink-0"
             :class="statusDotColor(monitor.latestStatus)"
           />
           <span class="font-medium text-foreground text-sm truncate">{{ monitor.name }}</span>
         </div>
-        <DashboardStatusBadge
-          v-if="monitor.latestStatus"
-          :status="monitor.latestStatus"
-          :label="monitor.enabled ? undefined : 'Paused'"
-        />
+        <div class="shrink-0">
+          <DashboardStatusBadge
+            v-if="monitor.latestStatus"
+            :status="monitor.latestStatus"
+            :label="monitor.enabled ? undefined : 'Paused'"
+          />
+        </div>
       </div>
 
       <!-- URL -->

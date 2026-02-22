@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-background bg-dot-pattern flex items-center justify-center px-6">
+  <div class="relative min-h-screen bg-background bg-dot-pattern flex items-center justify-center px-4 sm:px-6 overflow-hidden">
     <!-- Background glow -->
     <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[300px] bg-accent/8 rounded-full blur-[100px] pointer-events-none" />
 
@@ -14,7 +14,7 @@
       </div>
 
       <!-- Google Sign In -->
-      <div class="glass-card p-6 space-y-4 shadow-[0_0_60px_rgba(99,102,241,0.08)]" style="transform: none">
+      <div class="glass-card-static p-6 space-y-4 shadow-[0_0_60px_rgba(99,102,241,0.08)]">
         <a
           href="/api/auth/google"
           class="flex items-center justify-center gap-3 w-full h-11 bg-surface-overlay hover:bg-surface-raised text-foreground font-medium text-sm rounded-[var(--radius-md)] border border-border-subtle transition-colors"

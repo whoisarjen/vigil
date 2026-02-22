@@ -20,7 +20,7 @@
         :class="cn(
           'flex items-center gap-3 px-3 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-all duration-150',
           isActive(item.to)
-            ? 'text-accent-light border-l-2 border-accent bg-accent/5'
+            ? 'text-accent-light bg-accent/10 shadow-[inset_3px_0_0_var(--color-accent)]'
             : 'text-foreground-muted hover:text-foreground hover:bg-surface-raised/50',
         )"
         @click="sidebarOpen = false"

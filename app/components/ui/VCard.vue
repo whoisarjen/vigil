@@ -1,10 +1,9 @@
 <template>
   <div
     :class="cn(
-      'rounded-[var(--radius-lg)] border transition-all duration-300',
       hoverable
         ? 'glass-card cursor-pointer'
-        : 'bg-surface/80 border-border-subtle',
+        : 'glass-card-static',
       glow && 'glow-sm',
       props.class,
     )"

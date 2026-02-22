@@ -23,7 +23,7 @@
           error && 'border-danger/50 focus:border-danger/50 focus:ring-danger/30',
           props.class,
         )"
-        @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+        @input="handleInput($event)"
       />
     </div>
     <p v-if="error" class="text-xs text-danger">{{ error }}</p>
@@ -43,12 +43,23 @@ const props = defineProps<{
   class?: string
 }>()
 
-defineEmits<{
-  'update:modelValue': [value: string]
+const emit = defineEmits<{
+  'update:modelValue': [value: string | number]
 }>()
 
 const inputId = useId()
 const inputRef = ref<HTMLInputElement>()
+
+function handleInput(event: Event) {
+  const raw = (event.target as HTMLInputElement).value
+  // If the input type is number and the modelValue is a number, coerce to number
+  if (props.type === 'number' && typeof props.modelValue === 'number') {
+    const num = Number(raw)
+    emit('update:modelValue', raw === '' ? raw : isNaN(num) ? raw : num)
+  } else {
+    emit('update:modelValue', raw)
+  }
+}
 
 defineExpose({ focus: () => inputRef.value?.focus() })
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-background bg-dot-pattern">
     <!-- Loading -->
-    <div v-if="status === 'pending'" class="max-w-3xl mx-auto px-4 py-16 space-y-8">
+    <div v-if="status === 'pending'" class="max-w-3xl mx-auto px-4 sm:px-6 py-16 space-y-8">
       <div class="text-center space-y-4 animate-pulse">
         <div class="h-8 w-48 mx-auto rounded bg-surface-raised" />
         <div class="h-4 w-64 mx-auto rounded bg-surface-raised" />
@@ -13,7 +13,7 @@
     </div>
 
     <!-- Not Found -->
-    <div v-else-if="fetchError" class="max-w-3xl mx-auto px-4 py-16">
+    <div v-else-if="fetchError" class="max-w-3xl mx-auto px-4 sm:px-6 py-16">
       <div class="glass-card p-16 text-center space-y-4" style="transform: none">
         <div class="w-16 h-16 mx-auto rounded-full bg-danger-muted flex items-center justify-center">
           <AlertCircle class="w-8 h-8 text-danger" />
@@ -28,7 +28,7 @@
     </div>
 
     <!-- Status Page -->
-    <div v-else-if="pageData" class="max-w-3xl mx-auto px-4 py-12 space-y-8">
+    <div v-else-if="pageData" class="max-w-3xl mx-auto px-4 sm:px-6 py-12 space-y-8">
 
       <!-- Header -->
       <div class="text-center space-y-3 animate-fade-in">
@@ -64,16 +64,16 @@
       </div>
 
       <!-- Monitors -->
-      <div class="space-y-3 stagger">
+      <div class="space-y-3">
         <div
-          v-for="monitor in pageData.monitors"
+          v-for="(monitor, monitorIndex) in pageData.monitors"
           :key="monitor.id"
-          class="glass-card p-5 hover:bg-surface-raised/30 transition-colors"
-          style="transform: none"
+          class="glass-card p-4 sm:p-5 hover:bg-surface-raised/30 transition-colors animate-fade-in-up"
+          :style="{ transform: 'none', animationDelay: `${monitorIndex * 80}ms` }"
         >
           <div class="flex items-center justify-between mb-3">
-            <span class="font-medium text-foreground text-sm">{{ monitor.name }}</span>
-            <div class="flex items-center gap-2">
+            <span class="font-medium text-foreground text-sm truncate mr-3">{{ monitor.name }}</span>
+            <div class="flex items-center gap-2 shrink-0">
               <span class="text-xs font-medium" :class="monitorTextColor(monitor)">
                 {{ monitorStatusText(monitor) }}
               </span>
@@ -85,11 +85,11 @@
           </div>
 
           <!-- 90-day uptime bar -->
-          <div class="flex gap-px items-center h-8 group">
+          <div class="flex gap-px items-center h-8 rounded-sm">
             <div
               v-for="(day, i) in getUptimeDays(monitor)"
               :key="i"
-              class="flex-1 h-full rounded-sm transition-all duration-200 cursor-default relative"
+              class="group/bar flex-1 h-full min-w-0 rounded-[1px] transition-all duration-150 cursor-default relative hover:opacity-80"
               :class="dayBarColor(day)"
               @mouseenter="hoveredDay = `${monitor.id}-${i}`"
               @mouseleave="hoveredDay = null"
@@ -97,11 +97,12 @@
               <!-- Tooltip -->
               <div
                 v-if="hoveredDay === `${monitor.id}-${i}`"
-                class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 rounded-[var(--radius-sm)] bg-surface-overlay border border-border-subtle text-xs whitespace-nowrap z-20 pointer-events-none shadow-lg"
+                class="absolute bottom-full mb-2 px-2.5 py-1.5 rounded-sm bg-surface-overlay border border-border-subtle text-xs whitespace-nowrap z-30 pointer-events-none shadow-lg"
+                :class="tooltipAlign(i, 90)"
               >
-                <p class="font-medium text-foreground">{{ day.date }}</p>
-                <p :class="day.status === 'success' ? 'text-success' : day.status === 'failure' ? 'text-danger' : 'text-foreground-subtle'">
-                  {{ day.status === 'success' ? 'Operational' : day.status === 'failure' ? 'Downtime' : 'No data' }}
+                <p class="font-medium text-foreground">{{ formatDate(day.date) }}</p>
+                <p :class="dayTooltipColor(day.status)">
+                  {{ dayTooltipLabel(day.status) }}
                 </p>
               </div>
             </div>
@@ -109,7 +110,7 @@
 
           <div class="flex items-center justify-between mt-2">
             <span class="text-xs text-foreground-subtle">90 days ago</span>
-            <span class="text-xs font-medium" :class="uptimeColor(Number(monitor.uptimePercent) || null)">
+            <span class="text-xs font-medium" :class="uptimeColor(monitor.uptimePercent != null ? Number(monitor.uptimePercent) : null)">
               {{ monitor.uptimePercent != null ? `${Number(monitor.uptimePercent).toFixed(2)}%` : 'N/A' }} uptime
             </span>
             <span class="text-xs text-foreground-subtle">Today</span>
@@ -124,14 +125,14 @@
           <div
             v-for="incident in pageData.activeIncidents"
             :key="incident.id"
-            class="glass-card p-6 space-y-4 border-l-2"
+            class="glass-card p-5 sm:p-6 space-y-4 border-l-2"
             style="transform: none"
             :class="incidentBorderColor(incident.impact)"
           >
             <div class="flex items-start justify-between gap-3">
-              <div>
-                <h3 class="font-semibold text-foreground">{{ incident.title }}</h3>
-                <div class="flex items-center gap-2 mt-1">
+              <div class="min-w-0">
+                <h3 class="font-semibold text-foreground wrap-break-word">{{ incident.title }}</h3>
+                <div class="flex flex-wrap items-center gap-2 mt-1">
                   <span
                     class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium"
                     :class="impactBadgeClasses(incident.impact)"
@@ -143,17 +144,28 @@
               </div>
             </div>
 
+            <!-- Affected Monitors -->
+            <div v-if="incident.affectedMonitors?.length" class="flex flex-wrap gap-1.5">
+              <span
+                v-for="name in incident.affectedMonitors"
+                :key="name"
+                class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium bg-surface-raised text-foreground-muted"
+              >
+                {{ name }}
+              </span>
+            </div>
+
             <!-- Updates timeline -->
             <div v-if="incident.updates?.length" class="space-y-3 pl-4 border-l border-border-subtle">
-              <div v-for="(update, i) in incident.updates" :key="i" class="relative pl-4">
-                <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full" :class="updateDotColor(update.status)" />
-                <div class="flex items-center gap-2 mb-1">
+              <div v-for="update in incident.updates" :key="update.id" class="relative pl-4">
+                <div class="absolute -left-1.25 top-1.5 w-2 h-2 rounded-full" :class="updateDotColor(update.status)" />
+                <div class="flex flex-wrap items-center gap-2 mb-1">
                   <span class="text-xs font-medium" :class="updateStatusColor(update.status)">
                     {{ formatLabel(update.status) }}
                   </span>
-                  <span class="text-xs text-foreground-subtle">{{ formatTimeOnly(update.createdAt) }}</span>
+                  <span class="text-xs text-foreground-subtle">{{ timeAgo(update.createdAt) }}</span>
                 </div>
-                <p class="text-sm text-foreground-muted">{{ update.message }}</p>
+                <p class="text-sm text-foreground-muted wrap-break-word">{{ update.message }}</p>
               </div>
             </div>
           </div>
@@ -166,17 +178,17 @@
 
         <div v-for="group in groupedRecentIncidents" :key="group.date" class="space-y-2">
           <button
-            class="flex items-center gap-2 text-xs font-medium text-foreground-muted hover:text-foreground transition-colors w-full"
+            class="flex items-center gap-2 text-xs font-medium text-foreground-muted hover:text-foreground transition-colors w-full text-left"
             @click="toggleDateGroup(group.date)"
           >
             <ChevronRight
-              class="w-3.5 h-3.5 transition-transform"
-              :class="expandedDates.includes(group.date) && 'rotate-90'"
+              class="w-3.5 h-3.5 transition-transform shrink-0"
+              :class="expandedDates.has(group.date) && 'rotate-90'"
             />
             {{ group.dateLabel }}
           </button>
 
-          <div v-if="expandedDates.includes(group.date)" class="space-y-3 pl-5 animate-fade-in">
+          <div v-if="expandedDates.has(group.date)" class="space-y-3 pl-5 animate-fade-in">
             <div
               v-for="incident in group.incidents"
               :key="incident.id"
@@ -188,9 +200,9 @@
                   class="w-2 h-2 rounded-full shrink-0"
                   :class="impactDotColor(incident.impact)"
                 />
-                <h4 class="text-sm font-medium text-foreground">{{ incident.title }}</h4>
+                <h4 class="text-sm font-medium text-foreground truncate">{{ incident.title }}</h4>
                 <span
-                  class="inline-flex px-1.5 py-0.5 rounded text-[10px] font-medium ml-auto"
+                  class="inline-flex px-1.5 py-0.5 rounded text-[10px] font-medium ml-auto shrink-0"
                   :class="impactBadgeClasses(incident.impact)"
                 >
                   {{ formatLabel(incident.impact) }}
@@ -198,7 +210,7 @@
               </div>
               <!-- Show latest update message -->
               <div v-if="incident.updates?.length" class="pl-4">
-                <p class="text-xs text-foreground-subtle">{{ incident.updates[0]?.message }}</p>
+                <p class="text-xs text-foreground-subtle wrap-break-word">{{ incident.updates[0]?.message }}</p>
               </div>
             </div>
           </div>
@@ -227,36 +239,86 @@
 <script setup lang="ts">
 import { CheckCircle, AlertTriangle, XCircle, AlertCircle, ArrowLeft, ChevronRight } from 'lucide-vue-next'
 
+// Public page: no auth, no layout wrapping
 definePageMeta({
-  layout: 'default',
+  layout: false,
+  auth: false,
 })
 
+// ---------- Types ----------
+interface DailyStatus {
+  date: string
+  status: string
+  total?: number
+  successful?: number
+  failures?: number
+}
+
+interface Monitor {
+  id: string
+  name: string
+  displayOrder: number
+  currentStatus: 'operational' | 'down' | 'unknown'
+  latestResponseTime: number | null
+  latestCheckedAt: string | null
+  uptimePercent: number | null
+  dailyStatus: DailyStatus[]
+}
+
+interface IncidentUpdate {
+  id: string
+  message: string
+  status: string
+  createdAt: string
+}
+
+interface Incident {
+  id: string
+  title: string
+  status: string
+  impact: string
+  createdAt: string
+  updatedAt: string
+  resolvedAt?: string | null
+  updates: IncidentUpdate[]
+  affectedMonitors: string[]
+}
+
+interface StatusPageData {
+  slug: string
+  title: string
+  description: string | null
+  monitors: Monitor[]
+  activeIncidents: Incident[]
+  recentIncidents: Incident[]
+  overallStatus: 'operational' | 'major_outage' | 'partial_outage' | 'degraded'
+}
+
+// ---------- Data ----------
 const route = useRoute()
 const slug = route.params.slug as string
 const { statusDotColor, statusTextColor, statusLabel, uptimeColor, timeAgo } = useStatusColor()
 
-const { data: pageData, error: fetchError, status } = await useFetch(`/api/public/status/${slug}`)
+const { data: pageData, error: fetchError, status } = await useFetch<StatusPageData>(`/api/public/status/${slug}`)
 
 // SEO
 useHead({
-  title: computed(() => pageData.value ? `${(pageData.value as any).title} - Status` : 'Status Page'),
+  title: computed(() => pageData.value ? `${pageData.value.title} - Status` : 'Status Page'),
 })
 
 const hoveredDay = ref<string | null>(null)
-const expandedDates = ref<string[]>([])
+const expandedDates = ref<Set<string>>(new Set())
 
 // Expand first date group by default
-watch(pageData, (val: any) => {
+watch(pageData, (val) => {
   if (val?.recentIncidents?.length) {
     const firstDate = getDateKey(val.recentIncidents[0].createdAt)
-    if (!expandedDates.value.includes(firstDate)) {
-      expandedDates.value.push(firstDate)
-    }
+    expandedDates.value.add(firstDate)
   }
 }, { immediate: true })
 
-// Overall status
-const overallStatus = computed(() => (pageData.value as any)?.overallStatus || 'operational')
+// ---------- Overall Status ----------
+const overallStatus = computed(() => pageData.value?.overallStatus || 'operational')
 
 const overallStatusText = computed(() => {
   switch (overallStatus.value) {
@@ -283,6 +345,7 @@ const overallBannerClasses = computed(() => {
     case 'operational':
       return 'bg-success/10 text-success border border-success/20'
     case 'degraded':
+      return 'bg-warning/10 text-warning border border-warning/20'
     case 'partial_outage':
       return 'bg-warning/10 text-warning border border-warning/20'
     case 'major_outage':
@@ -320,37 +383,35 @@ const overallShadowClasses = computed(() => {
   }
 })
 
-// Monitor helpers - use composable for status mapping
-function resolveMonitorStatus(monitor: any): string | null {
-  // API returns currentStatus: 'operational' | 'down' | 'unknown'
+// ---------- Monitor Helpers ----------
+function resolveMonitorStatus(monitor: Monitor): string | null {
   if (monitor.currentStatus === 'operational') return 'success'
   if (monitor.currentStatus === 'down') return 'failure'
   return null
 }
 
-function monitorStatusText(monitor: any) {
+function monitorStatusText(monitor: Monitor) {
   return statusLabel(resolveMonitorStatus(monitor))
 }
 
-function monitorTextColor(monitor: any) {
+function monitorTextColor(monitor: Monitor) {
   return statusTextColor(resolveMonitorStatus(monitor))
 }
 
-function monitorDot(monitor: any) {
+function monitorDot(monitor: Monitor) {
   return statusDotColor(resolveMonitorStatus(monitor))
 }
 
-// 90-day uptime bar
-function getUptimeDays(monitor: any) {
-  const days = monitor.dailyStatus || monitor.uptimeDays || []
-  // Pad to 90 days
-  const result = []
+// ---------- 90-Day Uptime Bar ----------
+function getUptimeDays(monitor: Monitor): DailyStatus[] {
+  const days = monitor.dailyStatus || []
+  const result: DailyStatus[] = []
   const now = new Date()
   for (let i = 89; i >= 0; i--) {
     const d = new Date(now)
     d.setDate(d.getDate() - i)
     const dateStr = d.toISOString().split('T')[0]
-    const found = days.find((day: any) => day.date === dateStr)
+    const found = days.find((day) => day.date === dateStr)
     result.push({
       date: dateStr,
       status: found ? found.status : 'no_data',
@@ -359,7 +420,7 @@ function getUptimeDays(monitor: any) {
   return result
 }
 
-function dayBarColor(day: any) {
+function dayBarColor(day: DailyStatus): string {
   switch (day.status) {
     case 'success': return 'bg-success hover:bg-success/80'
     case 'failure':
@@ -370,8 +431,45 @@ function dayBarColor(day: any) {
   }
 }
 
-// Incident helpers
-function incidentBorderColor(impact: string) {
+function dayTooltipColor(status: string): string {
+  switch (status) {
+    case 'success': return 'text-success'
+    case 'failure':
+    case 'error': return 'text-danger'
+    case 'degraded':
+    case 'timeout': return 'text-warning'
+    default: return 'text-foreground-subtle'
+  }
+}
+
+function dayTooltipLabel(status: string): string {
+  switch (status) {
+    case 'success': return 'Operational'
+    case 'failure':
+    case 'error': return 'Downtime'
+    case 'degraded': return 'Degraded'
+    case 'timeout': return 'Timeout'
+    default: return 'No data'
+  }
+}
+
+function formatDate(dateStr: string): string {
+  return new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
+}
+
+// Tooltip alignment: left-align near start, right-align near end, center otherwise
+function tooltipAlign(index: number, total: number): string {
+  if (index < 8) return 'left-0'
+  if (index > total - 8) return 'right-0'
+  return 'left-1/2 -translate-x-1/2'
+}
+
+// ---------- Incident Helpers ----------
+function incidentBorderColor(impact: string): string {
   switch (impact) {
     case 'critical': return 'border-l-danger'
     case 'major': return 'border-l-danger'
@@ -380,7 +478,7 @@ function incidentBorderColor(impact: string) {
   }
 }
 
-function impactBadgeClasses(impact: string) {
+function impactBadgeClasses(impact: string): string {
   switch (impact) {
     case 'critical': return 'bg-danger-muted text-danger'
     case 'major': return 'bg-danger-muted text-danger'
@@ -389,7 +487,7 @@ function impactBadgeClasses(impact: string) {
   }
 }
 
-function impactDotColor(impact: string) {
+function impactDotColor(impact: string): string {
   switch (impact) {
     case 'critical': return 'bg-danger'
     case 'major': return 'bg-danger'
@@ -398,7 +496,7 @@ function impactDotColor(impact: string) {
   }
 }
 
-function updateDotColor(status: string) {
+function updateDotColor(status: string): string {
   switch (status) {
     case 'investigating': return 'bg-warning'
     case 'identified': return 'bg-warning'
@@ -408,7 +506,7 @@ function updateDotColor(status: string) {
   }
 }
 
-function updateStatusColor(status: string) {
+function updateStatusColor(status: string): string {
   switch (status) {
     case 'investigating': return 'text-warning'
     case 'identified': return 'text-warning'
@@ -418,22 +516,21 @@ function updateStatusColor(status: string) {
   }
 }
 
-function formatLabel(str: string) {
-  return str.charAt(0).toUpperCase() + str.slice(1)
+function formatLabel(str: string): string {
+  if (!str) return ''
+  return str
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase())
 }
 
-function formatTimeOnly(dateStr: string) {
-  return timeAgo(dateStr)
-}
-
-// Recent incidents grouped by date
-function getDateKey(dateStr: string) {
+// ---------- Recent Incidents Grouped by Date ----------
+function getDateKey(dateStr: string): string {
   return new Date(dateStr).toISOString().split('T')[0]
 }
 
 const groupedRecentIncidents = computed(() => {
-  const incidents = (pageData.value as any)?.recentIncidents || []
-  const groups: Record<string, any[]> = {}
+  const incidents = pageData.value?.recentIncidents || []
+  const groups: Record<string, Incident[]> = {}
   for (const incident of incidents) {
     const key = getDateKey(incident.createdAt)
     if (!groups[key]) groups[key] = []
@@ -454,11 +551,11 @@ const groupedRecentIncidents = computed(() => {
 })
 
 function toggleDateGroup(date: string) {
-  const idx = expandedDates.value.indexOf(date)
-  if (idx >= 0) {
-    expandedDates.value.splice(idx, 1)
+  const dates = expandedDates.value
+  if (dates.has(date)) {
+    dates.delete(date)
   } else {
-    expandedDates.value.push(date)
+    dates.add(date)
   }
 }
 </script>
