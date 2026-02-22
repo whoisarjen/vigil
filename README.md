@@ -25,8 +25,8 @@ Know the moment your scheduled tasks fail. Vigil monitors your cron job endpoint
 
 ```bash
 # Clone the repository
-git clone https://github.com/whoisarjen/cron.git
-cd cron
+git clone https://github.com/whoisarjen/vigil.git
+cd vigil
 
 # Install dependencies
 npm install
