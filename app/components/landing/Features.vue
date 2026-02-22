@@ -13,14 +13,15 @@
       </div>
 
       <!-- Features Grid -->
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 stagger">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 stagger">
         <div
           v-for="feature in features"
           :key="feature.title"
-          class="glass-card p-6 space-y-4"
+          class="glass-card p-8 space-y-4"
         >
-          <div class="w-10 h-10 rounded-[var(--radius-md)] bg-accent/10 flex items-center justify-center">
-            <component :is="feature.icon" class="w-5 h-5 text-accent-light" />
+          <div class="relative w-12 h-12 rounded-[var(--radius-lg)] bg-accent/10 flex items-center justify-center">
+            <div class="absolute inset-0 rounded-[var(--radius-lg)] bg-accent/5 blur-lg pointer-events-none" />
+            <component :is="feature.icon" class="relative w-5 h-5 text-accent-light" />
           </div>
           <h3 class="text-base font-semibold text-foreground">{{ feature.title }}</h3>
           <p class="text-sm text-foreground-muted leading-relaxed">{{ feature.description }}</p>

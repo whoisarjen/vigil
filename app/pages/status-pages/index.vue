@@ -61,7 +61,7 @@
       </div>
 
       <!-- Empty State -->
-      <div v-else class="glass-card p-16 text-center space-y-4" style="transform: none">
+      <div v-else class="glass-card p-16 text-center space-y-4 border-dashed" style="transform: none">
         <div class="w-14 h-14 mx-auto rounded-full bg-accent/10 flex items-center justify-center">
           <Globe class="w-7 h-7 text-accent-light" />
         </div>

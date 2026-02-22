@@ -61,7 +61,7 @@
 
       <!-- Stats Cards -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 stagger">
-        <div v-for="stat in stats" :key="stat.label" class="glass-card p-5 space-y-1" style="transform: none">
+        <div v-for="stat in stats" :key="stat.label" class="glass-card p-5 space-y-1 hover:border-accent/10 transition-colors" style="transform: none">
           <p class="text-xs text-foreground-subtle uppercase tracking-wider">{{ stat.label }}</p>
           <p class="text-2xl font-bold" :class="stat.color">{{ stat.value }}</p>
         </div>
@@ -94,7 +94,7 @@
         </div>
 
         <!-- Empty State -->
-        <div v-else class="glass-card p-12 text-center space-y-4" style="transform: none">
+        <div v-else class="glass-card p-12 text-center space-y-4 border-dashed" style="transform: none">
           <div class="w-12 h-12 mx-auto rounded-full bg-accent/10 flex items-center justify-center">
             <Activity class="w-6 h-6 text-accent-light" />
           </div>
@@ -124,6 +124,7 @@ definePageMeta({
 
 const { session } = useUserSession()
 const plan = computed(() => PLANS[session.value?.user?.plan as keyof typeof PLANS || 'free'])
+const { uptimeColor } = useStatusColor()
 
 const { success, error } = useToast()
 const runningChecks = ref(false)
@@ -167,7 +168,7 @@ const stats = computed(() => {
 
   return [
     { label: 'Monitors', value: `${total} / ${max}`, color: 'text-foreground' },
-    { label: 'Uptime', value: avgUptime !== null ? `${avgUptime.toFixed(1)}%` : 'N/A', color: avgUptime && avgUptime >= 99 ? 'text-success' : avgUptime && avgUptime >= 95 ? 'text-warning' : 'text-foreground' },
+    { label: 'Uptime', value: avgUptime !== null ? `${avgUptime.toFixed(1)}%` : 'N/A', color: uptimeColor(avgUptime) },
     { label: 'Healthy', value: `${successful}`, color: 'text-success' },
     { label: 'Incidents', value: `${incidents}`, color: incidents > 0 ? 'text-warning' : 'text-foreground' },
   ]

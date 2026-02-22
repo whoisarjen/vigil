@@ -20,8 +20,8 @@
         :class="cn(
           'flex items-center gap-3 px-3 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-all duration-150',
           isActive(item.to)
-            ? 'bg-accent/10 text-accent-light border-l-2 border-accent'
-            : 'text-foreground-muted hover:text-foreground hover:bg-surface-raised',
+            ? 'text-accent-light border-l-2 border-accent bg-accent/5'
+            : 'text-foreground-muted hover:text-foreground hover:bg-surface-raised/50',
         )"
         @click="sidebarOpen = false"
       >

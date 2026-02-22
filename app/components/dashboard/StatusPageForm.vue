@@ -19,15 +19,12 @@
         :hint="`Public URL: ${baseUrl}/status/${form.slug || 'your-slug'}`"
       />
 
-      <div class="space-y-1.5">
-        <label class="block text-sm font-medium text-foreground-muted">Description</label>
-        <textarea
-          v-model="form.description"
-          rows="3"
-          placeholder="A brief description shown on your status page"
-          class="w-full bg-surface border border-border rounded-[var(--radius-md)] px-3 py-2.5 text-sm text-foreground placeholder:text-foreground-subtle focus:outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/30 resize-none"
-        />
-      </div>
+      <VTextarea
+        v-model="form.description"
+        label="Description"
+        :rows="3"
+        placeholder="A brief description shown on your status page"
+      />
 
       <div class="flex items-center justify-between py-2">
         <div>
@@ -70,7 +67,7 @@
           </div>
           <span
             class="w-2 h-2 rounded-full shrink-0"
-            :class="getStatusDotColor(monitor.latestStatus)"
+            :class="statusDotColor(monitor.latestStatus)"
           />
         </label>
       </div>
@@ -104,6 +101,7 @@ const emit = defineEmits<{
   submit: [data: Record<string, any>]
 }>()
 
+const { statusDotColor } = useStatusColor()
 const loading = ref(false)
 const errors = ref<Record<string, string>>({})
 

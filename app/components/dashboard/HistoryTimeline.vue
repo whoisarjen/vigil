@@ -14,7 +14,7 @@
         <tr
           v-for="result in displayedResults"
           :key="result.id"
-          class="border-b border-border-subtle/50 hover:bg-surface-raised/30 transition-colors"
+          class="border-b border-border-subtle/50 hover:bg-surface-raised/50 transition-colors"
         >
           <td class="px-6 py-3 text-foreground-muted whitespace-nowrap">
             {{ formatDate(result.executedAt) }}

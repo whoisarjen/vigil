@@ -26,11 +26,11 @@
           <div
             v-if="modelValue"
             :class="cn(
-              'relative w-full bg-surface border border-border rounded-[var(--radius-xl)] shadow-2xl',
+              'relative w-full bg-surface-raised border border-border rounded-[var(--radius-xl)] shadow-2xl',
               sizes[size],
             )"
           >
-            <div v-if="title" class="flex items-center justify-between px-6 pt-6 pb-2">
+            <div v-if="title" class="flex items-center justify-between px-6 pt-6 pb-4">
               <h2 class="text-lg font-semibold text-foreground">{{ title }}</h2>
               <button
                 class="text-foreground-subtle hover:text-foreground transition-colors p-1 rounded-[var(--radius-sm)] hover:bg-surface-raised"
@@ -39,10 +39,10 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
               </button>
             </div>
-            <div class="px-6 py-4">
+            <div class="px-6 pb-6">
               <slot />
             </div>
-            <div v-if="$slots.footer" class="px-6 pb-6 pt-2 flex justify-end gap-3">
+            <div v-if="$slots.footer" class="px-6 pb-6 pt-0 flex justify-end gap-3">
               <slot name="footer" />
             </div>
           </div>

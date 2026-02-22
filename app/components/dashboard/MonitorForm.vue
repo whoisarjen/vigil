@@ -66,16 +66,8 @@
         <div class="space-y-3">
           <label class="block text-sm font-medium text-foreground-muted">Custom Headers</label>
           <div v-for="(header, i) in headers" :key="i" class="flex items-center gap-2">
-            <input
-              v-model="header.key"
-              placeholder="Header name"
-              class="flex-1 bg-surface border border-border rounded-[var(--radius-md)] px-3 py-2 text-sm text-foreground placeholder:text-foreground-subtle focus:outline-none focus:border-accent/50"
-            />
-            <input
-              v-model="header.value"
-              placeholder="Value"
-              class="flex-1 bg-surface border border-border rounded-[var(--radius-md)] px-3 py-2 text-sm text-foreground placeholder:text-foreground-subtle focus:outline-none focus:border-accent/50"
-            />
+            <VInput v-model="header.key" placeholder="Header name" />
+            <VInput v-model="header.value" placeholder="Value" />
             <button
               type="button"
               class="p-2 text-foreground-subtle hover:text-danger transition-colors"
@@ -92,12 +84,12 @@
 
         <!-- Body (only for POST/PUT/PATCH) -->
         <div v-if="['POST', 'PUT', 'PATCH'].includes(form.method)">
-          <label class="block text-sm font-medium text-foreground-muted mb-1.5">Request Body</label>
-          <textarea
+          <VTextarea
             v-model="form.body"
-            rows="4"
+            label="Request Body"
+            :rows="4"
             placeholder='{"key": "value"}'
-            class="w-full bg-surface border border-border rounded-[var(--radius-md)] px-3 py-2.5 text-sm text-foreground font-mono placeholder:text-foreground-subtle focus:outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/30 resize-none"
+            class="font-mono"
           />
         </div>
       </div>

@@ -3,15 +3,18 @@
     <!-- Background glow -->
     <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-accent/8 rounded-full blur-[120px] pointer-events-none" />
 
+    <!-- Animated gradient orb behind heading -->
+    <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none animate-pulse-glow" style="background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(168, 85, 247, 0.08) 40%, transparent 70%); filter: blur(60px);" />
+
     <div class="relative max-w-4xl mx-auto text-center space-y-8 animate-fade-in-up">
       <!-- Pill Badge -->
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-accent/20 bg-accent/5 text-xs font-medium text-accent-light">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-accent/20 bg-accent/5 backdrop-blur-sm text-xs font-medium text-accent-light">
         <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
         Open Source Status Page
       </div>
 
       <!-- Heading -->
-      <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1]">
+      <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1]" style="text-shadow: 0 0 80px rgba(99, 102, 241, 0.3)">
         <span class="text-foreground">Your Status Page</span>
         <br />
         <span class="gradient-text">Open Source & Free</span>
@@ -39,7 +42,7 @@
       <!-- Glow behind mockup -->
       <div class="absolute -inset-4 bg-accent/5 rounded-[var(--radius-xl)] blur-2xl pointer-events-none" />
 
-      <div class="relative glass-card overflow-hidden p-1" style="transform: none">
+      <div class="relative glass-card overflow-hidden p-1">
         <!-- Fake browser bar -->
         <div class="flex items-center gap-2 px-4 py-3 border-b border-border-subtle/50">
           <div class="flex gap-1.5">
@@ -69,7 +72,7 @@
             <div
               v-for="monitor in mockMonitors"
               :key="monitor.name"
-              class="flex items-center justify-between bg-surface/40 rounded-[var(--radius-md)] px-4 py-3 border border-border-subtle/20"
+              class="group flex items-center justify-between bg-surface/40 hover:bg-surface-raised/30 rounded-[var(--radius-md)] px-4 py-3 border border-border-subtle/20 transition-colors"
             >
               <div class="flex items-center gap-3">
                 <div class="w-2 h-2 rounded-full" :class="monitor.dotColor" />
@@ -94,11 +97,16 @@
         </div>
       </div>
     </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-foreground-subtle">
+      <ChevronDown class="w-5 h-5" />
+    </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { Github } from 'lucide-vue-next'
+import { Github, ChevronDown } from 'lucide-vue-next'
 
 const mockStats = [
   { label: 'Monitors', value: '4 / 5', color: 'text-foreground' },

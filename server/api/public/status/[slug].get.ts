@@ -70,6 +70,28 @@ export default defineEventHandler(async (event) => {
         ? latest.status === 'success' ? 'operational' : 'down'
         : 'unknown'
 
+      // Daily status for 90-day uptime bar
+      const dailyStatusRows = await db
+        .select({
+          date: sql<string>`to_char(${monitorResults.executedAt}, 'YYYY-MM-DD')`,
+          total: sql<number>`count(*)`,
+          successful: sql<number>`count(*) filter (where ${monitorResults.status} = 'success')`,
+          failures: sql<number>`count(*) filter (where ${monitorResults.status} != 'success')`,
+        })
+        .from(monitorResults)
+        .where(
+          and(
+            eq(monitorResults.monitorId, m.monitorId),
+            gte(monitorResults.executedAt, ninetyDaysAgo),
+          ),
+        )
+        .groupBy(sql`to_char(${monitorResults.executedAt}, 'YYYY-MM-DD')`)
+
+      const dailyStatus = dailyStatusRows.map((row) => ({
+        date: row.date,
+        status: row.failures > 0 ? 'failure' : 'success',
+      }))
+
       return {
         id: m.monitorId,
         name: m.name,
@@ -78,6 +100,7 @@ export default defineEventHandler(async (event) => {
         latestResponseTime: latest?.responseTimeMs || null,
         latestCheckedAt: latest?.executedAt?.toISOString() || null,
         uptimePercent,
+        dailyStatus,
       }
     }),
   )

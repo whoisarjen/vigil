@@ -15,9 +15,14 @@ export function useToast() {
     }, 4000)
   }
 
+  function dismiss(id: string) {
+    toasts.value = toasts.value.filter(t => t.id !== id)
+  }
+
   return {
     toasts: readonly(toasts),
     toast,
+    dismiss,
     success: (msg: string) => toast(msg, 'success'),
     error: (msg: string) => toast(msg, 'error'),
     info: (msg: string) => toast(msg, 'info'),

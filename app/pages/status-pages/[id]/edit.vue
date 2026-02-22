@@ -3,7 +3,7 @@
     <DashboardHeader>
       <template #title>
         <div class="flex items-center gap-3 min-w-0">
-          <NuxtLink to="/status-pages" class="text-foreground-subtle hover:text-foreground-muted transition-colors shrink-0">
+          <NuxtLink to="/status-pages" class="text-foreground-subtle hover:text-accent-light transition-colors shrink-0">
             Status Pages
           </NuxtLink>
           <ChevronRight class="w-4 h-4 text-foreground-subtle shrink-0" />

@@ -3,7 +3,7 @@
     <DashboardHeader>
       <template #title>
         <div class="flex items-center gap-3 min-w-0">
-          <NuxtLink to="/incidents" class="text-foreground-subtle hover:text-foreground-muted transition-colors shrink-0">
+          <NuxtLink to="/incidents" class="text-foreground-subtle hover:text-accent-light transition-colors shrink-0">
             Incidents
           </NuxtLink>
           <ChevronRight class="w-4 h-4 text-foreground-subtle shrink-0" />
@@ -48,10 +48,10 @@
     <div v-else class="p-6 lg:p-8 space-y-6">
       <!-- Header Info -->
       <div class="flex items-center gap-3 flex-wrap">
-        <VBadge :variant="getStatusVariant(data.status)" size="md" dot>
+        <VBadge :variant="incidentStatusVariant(data.status)" size="md" dot>
           {{ formatLabel(data.status) }}
         </VBadge>
-        <VBadge :variant="getImpactVariant(data.impact)" size="md">
+        <VBadge :variant="incidentImpactVariant(data.impact)" size="md">
           {{ formatLabel(data.impact) }} impact
         </VBadge>
       </div>
@@ -74,7 +74,7 @@
 
       <!-- Post Update -->
       <div class="glass-card p-6 space-y-4" style="transform: none">
-        <h3 class="text-sm font-semibold text-foreground-muted uppercase tracking-wider">Post Update</h3>
+        <h3 class="text-base font-semibold text-foreground">Post Update</h3>
         <form class="space-y-4" @submit.prevent="handlePostUpdate">
           <div class="grid sm:grid-cols-2 gap-4">
             <VSelect v-model="updateForm.status" label="New Status">
@@ -84,15 +84,12 @@
               <option v-for="i in INCIDENT_IMPACTS" :key="i.value" :value="i.value">{{ i.label }}</option>
             </VSelect>
           </div>
-          <div class="space-y-1.5">
-            <label class="block text-sm font-medium text-foreground-muted">Message</label>
-            <textarea
-              v-model="updateForm.message"
-              rows="3"
-              placeholder="Provide an update on the situation..."
-              class="w-full bg-surface border border-border rounded-[var(--radius-md)] px-3 py-2.5 text-sm text-foreground placeholder:text-foreground-subtle focus:outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/30 resize-none"
-            />
-          </div>
+          <VTextarea
+            v-model="updateForm.message"
+            label=""
+            :rows="3"
+            placeholder="Describe the update..."
+          />
           <div class="flex justify-end">
             <VButton type="submit" size="sm" :loading="posting">
               <Send class="w-3.5 h-3.5" />
@@ -108,18 +105,18 @@
           <h3 class="text-sm font-semibold text-foreground-muted uppercase tracking-wider">Update Timeline</h3>
         </div>
 
-        <div v-if="data.updates?.length" class="divide-y divide-border-subtle">
-          <div v-for="(update, i) in sortedUpdates" :key="i" class="px-6 py-4">
+        <div v-if="data.updates?.length" class="p-6 space-y-4">
+          <div v-for="(update, i) in sortedUpdates" :key="i">
             <div class="flex items-start gap-4">
               <div class="mt-1 shrink-0">
                 <div
                   class="w-2.5 h-2.5 rounded-full"
-                  :class="getStatusDotColor(update.status)"
+                  :class="incidentDotColor(update.status)"
                 />
               </div>
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 flex-wrap">
-                  <VBadge :variant="getStatusVariant(update.status)" size="sm">
+                  <VBadge :variant="incidentStatusVariant(update.status)" size="sm">
                     {{ formatLabel(update.status) }}
                   </VBadge>
                   <span class="text-xs text-foreground-subtle">{{ formatDateTime(update.createdAt) }}</span>
@@ -146,7 +143,7 @@
           >
             <span
               class="w-2 h-2 rounded-full shrink-0"
-              :class="getStatusDotColor(monitor.latestStatus || null)"
+              :class="statusDotColor(monitor.latestStatus || null)"
             />
             <span class="text-sm font-medium text-foreground">{{ monitor.name }}</span>
           </div>
@@ -180,6 +177,7 @@ definePageMeta({
 const route = useRoute()
 const id = route.params.id as string
 const { success, error } = useToast()
+const { incidentStatusVariant, incidentImpactVariant, statusDotColor } = useStatusColor()
 
 const showDelete = ref(false)
 const deleting = ref(false)
@@ -243,34 +241,12 @@ async function handleDelete() {
   }
 }
 
-function getStatusVariant(status: string) {
-  switch (status) {
-    case 'investigating': return 'warning' as const
-    case 'identified': return 'warning' as const
-    case 'monitoring': return 'accent' as const
-    case 'resolved': return 'success' as const
-    default: return 'default' as const
-  }
-}
-
-function getImpactVariant(impact: string) {
-  switch (impact) {
-    case 'critical': return 'danger' as const
-    case 'major': return 'danger' as const
-    case 'minor': return 'warning' as const
-    case 'none': return 'default' as const
-    default: return 'default' as const
-  }
-}
-
-function getStatusDotColor(status: string | null) {
+function incidentDotColor(status: string) {
   switch (status) {
     case 'investigating': return 'bg-warning'
     case 'identified': return 'bg-warning'
     case 'monitoring': return 'bg-accent'
     case 'resolved': return 'bg-success'
-    case 'success': return 'bg-success'
-    case 'failure': return 'bg-danger'
     default: return 'bg-foreground-subtle'
   }
 }

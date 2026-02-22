@@ -53,7 +53,7 @@
       <!-- Overall Status Banner -->
       <div
         class="relative overflow-hidden rounded-[var(--radius-xl)] p-6 text-center animate-fade-in-up"
-        :class="overallBannerClasses"
+        :class="[overallBannerClasses, overallShadowClasses]"
       >
         <!-- Glow background effect -->
         <div class="absolute inset-0 opacity-30" :class="overallGlowClasses" />
@@ -68,18 +68,18 @@
         <div
           v-for="monitor in pageData.monitors"
           :key="monitor.id"
-          class="glass-card p-5"
+          class="glass-card p-5 hover:bg-surface-raised/30 transition-colors"
           style="transform: none"
         >
           <div class="flex items-center justify-between mb-3">
             <span class="font-medium text-foreground text-sm">{{ monitor.name }}</span>
             <div class="flex items-center gap-2">
-              <span class="text-xs font-medium" :class="monitorStatusColor(monitor)">
+              <span class="text-xs font-medium" :class="monitorTextColor(monitor)">
                 {{ monitorStatusText(monitor) }}
               </span>
               <span
                 class="w-2.5 h-2.5 rounded-full shrink-0"
-                :class="monitorDotColor(monitor)"
+                :class="monitorDot(monitor)"
               />
             </div>
           </div>
@@ -89,7 +89,7 @@
             <div
               v-for="(day, i) in getUptimeDays(monitor)"
               :key="i"
-              class="flex-1 h-full rounded-sm transition-all duration-150 cursor-default relative"
+              class="flex-1 h-full rounded-sm transition-all duration-200 cursor-default relative"
               :class="dayBarColor(day)"
               @mouseenter="hoveredDay = `${monitor.id}-${i}`"
               @mouseleave="hoveredDay = null"
@@ -109,7 +109,7 @@
 
           <div class="flex items-center justify-between mt-2">
             <span class="text-xs text-foreground-subtle">90 days ago</span>
-            <span class="text-xs font-medium" :class="uptimePercentColor(monitor)">
+            <span class="text-xs font-medium" :class="uptimeColor(Number(monitor.uptimePercent) || null)">
               {{ monitor.uptimePercent != null ? `${Number(monitor.uptimePercent).toFixed(2)}%` : 'N/A' }} uptime
             </span>
             <span class="text-xs text-foreground-subtle">Today</span>
@@ -138,7 +138,7 @@
                   >
                     {{ formatLabel(incident.impact) }}
                   </span>
-                  <span class="text-xs text-foreground-subtle">{{ formatRelativeTime(incident.createdAt) }}</span>
+                  <span class="text-xs text-foreground-subtle">{{ timeAgo(incident.createdAt) }}</span>
                 </div>
               </div>
             </div>
@@ -233,6 +233,7 @@ definePageMeta({
 
 const route = useRoute()
 const slug = route.params.slug as string
+const { statusDotColor, statusTextColor, statusLabel, uptimeColor, timeAgo } = useStatusColor()
 
 const { data: pageData, error: fetchError, status } = await useFetch(`/api/public/status/${slug}`)
 
@@ -260,7 +261,8 @@ const overallStatus = computed(() => (pageData.value as any)?.overallStatus || '
 const overallStatusText = computed(() => {
   switch (overallStatus.value) {
     case 'operational': return 'All Systems Operational'
-    case 'degraded': return 'Partial System Outage'
+    case 'degraded': return 'Degraded Performance'
+    case 'partial_outage': return 'Partial System Outage'
     case 'major_outage': return 'Major System Outage'
     default: return 'All Systems Operational'
   }
@@ -270,6 +272,7 @@ const overallIcon = computed(() => {
   switch (overallStatus.value) {
     case 'operational': return CheckCircle
     case 'degraded': return AlertTriangle
+    case 'partial_outage': return AlertTriangle
     case 'major_outage': return XCircle
     default: return CheckCircle
   }
@@ -280,6 +283,7 @@ const overallBannerClasses = computed(() => {
     case 'operational':
       return 'bg-success/10 text-success border border-success/20'
     case 'degraded':
+    case 'partial_outage':
       return 'bg-warning/10 text-warning border border-warning/20'
     case 'major_outage':
       return 'bg-danger/10 text-danger border border-danger/20'
@@ -293,6 +297,7 @@ const overallGlowClasses = computed(() => {
     case 'operational':
       return 'bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.15),transparent_70%)]'
     case 'degraded':
+    case 'partial_outage':
       return 'bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.15),transparent_70%)]'
     case 'major_outage':
       return 'bg-[radial-gradient(ellipse_at_center,rgba(239,68,68,0.15),transparent_70%)]'
@@ -301,36 +306,38 @@ const overallGlowClasses = computed(() => {
   }
 })
 
-// Monitor helpers
+const overallShadowClasses = computed(() => {
+  switch (overallStatus.value) {
+    case 'operational':
+      return 'shadow-[0_0_80px_rgba(16,185,129,0.15)]'
+    case 'degraded':
+    case 'partial_outage':
+      return 'shadow-[0_0_80px_rgba(245,158,11,0.15)]'
+    case 'major_outage':
+      return 'shadow-[0_0_80px_rgba(239,68,68,0.15)]'
+    default:
+      return 'shadow-[0_0_80px_rgba(16,185,129,0.15)]'
+  }
+})
+
+// Monitor helpers - use composable for status mapping
+function resolveMonitorStatus(monitor: any): string | null {
+  // API returns currentStatus: 'operational' | 'down' | 'unknown'
+  if (monitor.currentStatus === 'operational') return 'success'
+  if (monitor.currentStatus === 'down') return 'failure'
+  return null
+}
+
 function monitorStatusText(monitor: any) {
-  if (monitor.status === 'operational' || monitor.latestStatus === 'success') return 'Operational'
-  if (monitor.status === 'degraded' || monitor.latestStatus === 'timeout') return 'Degraded'
-  if (monitor.status === 'down' || monitor.latestStatus === 'failure' || monitor.latestStatus === 'error') return 'Down'
-  return 'Unknown'
+  return statusLabel(resolveMonitorStatus(monitor))
 }
 
-function monitorStatusColor(monitor: any) {
-  const text = monitorStatusText(monitor)
-  if (text === 'Operational') return 'text-success'
-  if (text === 'Degraded') return 'text-warning'
-  if (text === 'Down') return 'text-danger'
-  return 'text-foreground-subtle'
+function monitorTextColor(monitor: any) {
+  return statusTextColor(resolveMonitorStatus(monitor))
 }
 
-function monitorDotColor(monitor: any) {
-  const text = monitorStatusText(monitor)
-  if (text === 'Operational') return 'bg-success'
-  if (text === 'Degraded') return 'bg-warning'
-  if (text === 'Down') return 'bg-danger'
-  return 'bg-foreground-subtle'
-}
-
-function uptimePercentColor(monitor: any) {
-  const pct = Number(monitor.uptimePercent)
-  if (isNaN(pct)) return 'text-foreground-subtle'
-  if (pct >= 99) return 'text-success'
-  if (pct >= 95) return 'text-warning'
-  return 'text-danger'
+function monitorDot(monitor: any) {
+  return statusDotColor(resolveMonitorStatus(monitor))
 }
 
 // 90-day uptime bar
@@ -416,14 +423,7 @@ function formatLabel(str: string) {
 }
 
 function formatTimeOnly(dateStr: string) {
-  const d = new Date(dateStr)
-  return d.toLocaleString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-  })
+  return timeAgo(dateStr)
 }
 
 // Recent incidents grouped by date

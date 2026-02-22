@@ -31,16 +31,13 @@
         </VSelect>
       </div>
 
-      <div class="space-y-1.5">
-        <label class="block text-sm font-medium text-foreground-muted">Message</label>
-        <textarea
-          v-model="form.message"
-          rows="4"
-          placeholder="Describe the current situation..."
-          class="w-full bg-surface border border-border rounded-[var(--radius-md)] px-3 py-2.5 text-sm text-foreground placeholder:text-foreground-subtle focus:outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/30 resize-none"
-        />
-        <p v-if="errors.message" class="text-xs text-danger">{{ errors.message }}</p>
-      </div>
+      <VTextarea
+        v-model="form.message"
+        label="Message"
+        :rows="4"
+        placeholder="Describe the current situation..."
+        :error="errors.message"
+      />
     </div>
 
     <!-- Affected Monitors -->

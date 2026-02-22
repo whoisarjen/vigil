@@ -14,10 +14,10 @@
       </div>
 
       <!-- Google Sign In -->
-      <div class="glass-card p-6 space-y-4" style="transform: none">
+      <div class="glass-card p-6 space-y-4 shadow-[0_0_60px_rgba(99,102,241,0.08)]" style="transform: none">
         <a
           href="/api/auth/google"
-          class="flex items-center justify-center gap-3 w-full h-11 bg-white hover:bg-gray-50 text-gray-800 font-medium text-sm rounded-[var(--radius-md)] transition-colors"
+          class="flex items-center justify-center gap-3 w-full h-11 bg-surface-overlay hover:bg-surface-raised text-foreground font-medium text-sm rounded-[var(--radius-md)] border border-border-subtle transition-colors"
         >
           <svg class="w-5 h-5" viewBox="0 0 24 24">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
@@ -37,7 +37,12 @@
       </p>
 
       <!-- Error message -->
-      <div v-if="error" class="bg-danger-muted text-danger text-sm px-4 py-3 rounded-[var(--radius-md)] text-center">
+      <div v-if="error" class="flex items-center justify-center gap-2 bg-danger-muted text-danger text-sm px-4 py-3 rounded-[var(--radius-md)]">
+        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+          <line x1="12" y1="9" x2="12" y2="13" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
         Authentication failed. Please try again.
       </div>
     </div>

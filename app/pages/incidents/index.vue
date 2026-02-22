@@ -19,7 +19,7 @@
           class="px-3 py-1.5 text-xs font-medium rounded-[var(--radius-sm)] transition-colors"
           :class="activeTab === tab.value
             ? 'bg-accent text-white shadow-sm'
-            : 'text-foreground-muted hover:text-foreground'"
+            : 'text-foreground-muted hover:text-foreground hover:bg-surface-raised'"
           @click="activeTab = tab.value"
         >
           {{ tab.label }}
@@ -61,10 +61,10 @@
                 <h3 class="font-semibold text-foreground group-hover:text-accent-light transition-colors truncate">
                   {{ incident.title }}
                 </h3>
-                <VBadge :variant="getStatusVariant(incident.status)" size="sm">
+                <VBadge :variant="incidentStatusVariant(incident.status)" size="sm">
                   {{ formatStatus(incident.status) }}
                 </VBadge>
-                <VBadge :variant="getImpactVariant(incident.impact)" size="sm">
+                <VBadge :variant="incidentImpactVariant(incident.impact)" size="sm">
                   {{ formatImpact(incident.impact) }}
                 </VBadge>
               </div>
@@ -73,7 +73,7 @@
                   <Globe class="w-3 h-3" />
                   {{ incident.statusPageTitle }}
                 </span>
-                <span>{{ formatRelativeTime(incident.createdAt) }}</span>
+                <span>{{ timeAgo(incident.createdAt) }}</span>
                 <span v-if="incident.affectedMonitors?.length" class="flex items-center gap-1">
                   <Activity class="w-3 h-3" />
                   {{ incident.affectedMonitors.length }} monitor{{ incident.affectedMonitors.length !== 1 ? 's' : '' }}
@@ -118,6 +118,7 @@ definePageMeta({
   middleware: 'auth',
 })
 
+const { incidentStatusVariant, incidentImpactVariant, timeAgo } = useStatusColor()
 const activeTab = ref<'all' | 'active' | 'resolved'>('all')
 
 const { data: incidentsData, status } = await useFetch('/api/incidents')
@@ -134,26 +135,6 @@ const tabs = computed(() => [
   { value: 'active' as const, label: 'Active', count: incidents.value.filter((i: any) => i.status !== 'resolved').length },
   { value: 'resolved' as const, label: 'Resolved', count: incidents.value.filter((i: any) => i.status === 'resolved').length },
 ])
-
-function getStatusVariant(status: string) {
-  switch (status) {
-    case 'investigating': return 'warning' as const
-    case 'identified': return 'warning' as const
-    case 'monitoring': return 'accent' as const
-    case 'resolved': return 'success' as const
-    default: return 'default' as const
-  }
-}
-
-function getImpactVariant(impact: string) {
-  switch (impact) {
-    case 'critical': return 'danger' as const
-    case 'major': return 'danger' as const
-    case 'minor': return 'warning' as const
-    case 'none': return 'default' as const
-    default: return 'default' as const
-  }
-}
 
 function formatStatus(status: string) {
   return status.charAt(0).toUpperCase() + status.slice(1)

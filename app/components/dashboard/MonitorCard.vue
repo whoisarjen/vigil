@@ -1,12 +1,12 @@
 <template>
-  <NuxtLink :to="`/monitors/${monitor.id}`" class="block">
-    <div class="glass-card p-5 space-y-3">
+  <NuxtLink :to="`/monitors/${monitor.id}`" class="block group">
+    <div class="glass-card p-5 space-y-3 hover:border-accent/20 hover:shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all duration-200">
       <!-- Top Row: Status + Name + Toggle -->
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2.5">
           <span
             class="w-2.5 h-2.5 rounded-full shrink-0"
-            :class="getStatusDotColor(monitor.latestStatus)"
+            :class="statusDotColor(monitor.latestStatus)"
           />
           <span class="font-medium text-foreground text-sm truncate">{{ monitor.name }}</span>
         </div>
@@ -39,7 +39,7 @@
           <span class="text-[10px] text-foreground-subtle uppercase tracking-wider">Uptime</span>
           <span
             class="text-xs font-medium"
-            :class="monitor.uptimePercent >= 99 ? 'text-success' : monitor.uptimePercent >= 95 ? 'text-warning' : 'text-danger'"
+            :class="uptimeColor(monitor.uptimePercent)"
           >
             {{ formatUptimePercent(monitor.uptimePercent) }}
           </span>
@@ -62,6 +62,8 @@ import type { MonitorWithLatest } from '~~/shared/types'
 defineProps<{
   monitor: MonitorWithLatest
 }>()
+
+const { statusDotColor, uptimeColor } = useStatusColor()
 
 function formatInterval(minutes: number): string {
   if (minutes < 60) return `${minutes}m`

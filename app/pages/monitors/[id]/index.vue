@@ -3,7 +3,7 @@
     <DashboardHeader>
       <template #title>
         <div class="flex items-center gap-3 min-w-0">
-          <NuxtLink to="/monitors" class="text-foreground-subtle hover:text-foreground-muted transition-colors shrink-0">
+          <NuxtLink to="/monitors" class="text-foreground-subtle hover:text-accent-light transition-colors shrink-0">
             Monitors
           </NuxtLink>
           <ChevronRight class="w-4 h-4 text-foreground-subtle shrink-0" />
@@ -55,7 +55,7 @@
       <div class="flex items-center gap-4 flex-wrap">
         <span
           class="w-3 h-3 rounded-full"
-          :class="getStatusDotColor(data.results?.[0]?.status)"
+          :class="statusDotColor(data.results?.[0]?.status)"
         />
         <DashboardStatusBadge
           v-if="data.results?.[0]"
@@ -67,29 +67,29 @@
 
       <!-- Stats -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 stagger">
-        <div class="glass-card p-5 space-y-1" style="transform: none">
+        <div class="glass-card p-5 space-y-1 hover:border-accent/10 transition-all" style="transform: none">
           <p class="text-xs text-foreground-subtle uppercase tracking-wider">Uptime</p>
           <p
             class="text-2xl font-bold"
-            :class="data.stats.uptimePercent >= 99 ? 'text-success' : data.stats.uptimePercent >= 95 ? 'text-warning' : 'text-danger'"
+            :class="uptimeColor(data.stats.uptimePercent)"
           >
             {{ data.stats.uptimePercent !== null ? `${data.stats.uptimePercent.toFixed(1)}%` : 'N/A' }}
           </p>
         </div>
-        <div class="glass-card p-5 space-y-1" style="transform: none">
+        <div class="glass-card p-5 space-y-1 hover:border-accent/10 transition-all" style="transform: none">
           <p class="text-xs text-foreground-subtle uppercase tracking-wider">Avg Response</p>
           <p class="text-2xl font-bold text-foreground">
             {{ data.stats.avgResponseTime ? formatResponseTime(data.stats.avgResponseTime) : 'N/A' }}
           </p>
         </div>
-        <div class="glass-card p-5 space-y-1" style="transform: none">
+        <div class="glass-card p-5 space-y-1 hover:border-accent/10 transition-all" style="transform: none">
           <p class="text-xs text-foreground-subtle uppercase tracking-wider">Total Checks</p>
           <p class="text-2xl font-bold text-foreground">{{ data.stats.totalChecks }}</p>
         </div>
-        <div class="glass-card p-5 space-y-1" style="transform: none">
+        <div class="glass-card p-5 space-y-1 hover:border-accent/10 transition-all" style="transform: none">
           <p class="text-xs text-foreground-subtle uppercase tracking-wider">Last Checked</p>
           <p class="text-2xl font-bold text-foreground">
-            {{ data.stats.lastChecked ? formatRelativeTime(data.stats.lastChecked) : 'Never' }}
+            {{ data.stats.lastChecked ? timeAgo(data.stats.lastChecked) : 'Never' }}
           </p>
         </div>
       </div>
@@ -135,6 +135,7 @@ definePageMeta({
 const route = useRoute()
 const id = route.params.id as string
 const { success, error } = useToast()
+const { statusDotColor, uptimeColor, timeAgo } = useStatusColor()
 
 const showDelete = ref(false)
 const deleting = ref(false)

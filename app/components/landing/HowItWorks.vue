@@ -13,11 +13,11 @@
       <div class="grid md:grid-cols-3 gap-8 stagger">
         <div v-for="step in steps" :key="step.number" class="relative text-center space-y-4">
           <!-- Number -->
-          <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-accent/10 border border-accent/20 text-accent font-bold text-lg">
+          <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-accent/10 border border-accent/20 text-accent font-bold text-lg animate-pulse-glow">
             {{ step.number }}
           </div>
           <!-- Connector line (desktop only) -->
-          <div v-if="step.number < 3" class="hidden md:block absolute top-6 left-[calc(50%+32px)] w-[calc(100%-64px)] h-px bg-gradient-to-r from-accent/20 to-accent/5" />
+          <div v-if="step.number < 3" class="hidden md:block absolute top-7 left-[calc(50%+36px)] w-[calc(100%-72px)] h-px bg-gradient-to-r from-accent/20 to-accent/5" />
           <h3 class="text-lg font-semibold text-foreground">{{ step.title }}</h3>
           <p class="text-sm text-foreground-muted leading-relaxed max-w-xs mx-auto">{{ step.description }}</p>
         </div>
