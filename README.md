@@ -1,14 +1,14 @@
 # Vigil
 
-Open source cron job monitoring with Statuspage.io and BetterUptime integration.
+The open source alternative to Statuspage and BetterUptime.
 
-Know the moment your scheduled tasks fail. Vigil monitors your cron job endpoints and automatically updates your status page.
+Monitor your services, manage incidents, and share a beautiful public status page. Free, open source, and self-hostable.
 
 ## Features
 
-- **Cron Monitoring** — Monitor up to 5 endpoints on the free tier
-- **Statuspage.io Integration** — Automatically update component status when checks fail
-- **BetterUptime Integration** — Send heartbeat pings to keep your incident management in sync
+- **Uptime Monitoring** — Monitor up to 5 endpoints on the free tier
+- **Public Status Page** — Share a branded status page with real-time service health
+- **Incident Management** — Track and communicate incidents with timeline updates
 - **7-Day History** — Visual timeline of check results with response times
 - **Flexible Scheduling** — Check every 15 minutes, hourly, or daily
 - **Google Sign-In** — Quick and secure authentication

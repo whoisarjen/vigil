@@ -59,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import { LayoutDashboard, Activity, Settings, LogOut } from 'lucide-vue-next'
+import { LayoutDashboard, Activity, Globe, AlertTriangle, Settings, LogOut } from 'lucide-vue-next'
 
 const { session, clear } = useUserSession()
 const route = useRoute()
@@ -68,6 +68,8 @@ const sidebarOpen = inject<Ref<boolean>>('sidebarOpen', ref(false))
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/monitors', label: 'Monitors', icon: Activity },
+  { to: '/status-pages', label: 'Status Pages', icon: Globe },
+  { to: '/incidents', label: 'Incidents', icon: AlertTriangle },
   { to: '/settings', label: 'Settings', icon: Settings },
 ]
 

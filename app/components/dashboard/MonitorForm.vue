@@ -103,61 +103,6 @@
       </div>
     </div>
 
-    <!-- Integrations -->
-    <div class="space-y-5">
-      <button
-        type="button"
-        class="flex items-center gap-2 text-sm font-semibold text-foreground-muted uppercase tracking-wider hover:text-foreground transition-colors"
-        @click="showIntegrations = !showIntegrations"
-      >
-        <ChevronRight class="w-4 h-4 transition-transform" :class="showIntegrations && 'rotate-90'" />
-        Integrations
-      </button>
-
-      <div v-if="showIntegrations" class="space-y-6 animate-fade-in">
-        <!-- Statuspage.io -->
-        <div class="space-y-4 p-4 rounded-[var(--radius-lg)] border border-border-subtle bg-surface/30">
-          <div class="flex items-center gap-2">
-            <Link class="w-4 h-4 text-accent-light" />
-            <h4 class="text-sm font-medium text-foreground">Statuspage.io</h4>
-          </div>
-          <VInput
-            v-model="form.statuspageApiKey"
-            label="API Key"
-            type="password"
-            placeholder="Your Statuspage API key"
-            hint="Found in Statuspage.io → Manage Account → API"
-          />
-          <div class="grid sm:grid-cols-2 gap-4">
-            <VInput
-              v-model="form.statuspagePageId"
-              label="Page ID"
-              placeholder="abc123def456"
-            />
-            <VInput
-              v-model="form.statuspageComponentId"
-              label="Component ID"
-              placeholder="xyz789ghi012"
-            />
-          </div>
-        </div>
-
-        <!-- BetterUptime -->
-        <div class="space-y-4 p-4 rounded-[var(--radius-lg)] border border-border-subtle bg-surface/30">
-          <div class="flex items-center gap-2">
-            <Heart class="w-4 h-4 text-accent-light" />
-            <h4 class="text-sm font-medium text-foreground">BetterUptime</h4>
-          </div>
-          <VInput
-            v-model="form.betteruptimeHeartbeatUrl"
-            label="Heartbeat URL"
-            placeholder="https://uptime.betterstack.com/api/v1/heartbeat/..."
-            hint="Create a heartbeat in BetterUptime and paste the URL here"
-          />
-        </div>
-      </div>
-    </div>
-
     <!-- Actions -->
     <div class="flex items-center justify-between pt-4 border-t border-border-subtle">
       <VButton type="button" variant="ghost" @click="navigateTo('/monitors')">
@@ -171,7 +116,7 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronRight, Plus, Trash2, Link, Heart } from 'lucide-vue-next'
+import { ChevronRight, Plus, Trash2 } from 'lucide-vue-next'
 import { SCHEDULE_INTERVALS, HTTP_METHODS, TIMEOUT_OPTIONS } from '~~/shared/types'
 
 const props = defineProps<{
@@ -185,7 +130,6 @@ const emit = defineEmits<{
 
 const loading = ref(false)
 const showAdvanced = ref(false)
-const showIntegrations = ref(false)
 const errors = ref<Record<string, string>>({})
 
 const headers = ref<{ key: string; value: string }[]>(
@@ -203,15 +147,10 @@ const form = reactive({
   scheduleInterval: props.initialData?.scheduleInterval || 15,
   enabled: props.initialData?.enabled ?? true,
   body: props.initialData?.body || '',
-  statuspageApiKey: props.initialData?.statuspageApiKey || '',
-  statuspagePageId: props.initialData?.statuspagePageId || '',
-  statuspageComponentId: props.initialData?.statuspageComponentId || '',
-  betteruptimeHeartbeatUrl: props.initialData?.betteruptimeHeartbeatUrl || '',
 })
 
 // Show sections if data exists
 if (props.initialData?.body || headers.value.length) showAdvanced.value = true
-if (props.initialData?.statuspageApiKey || props.initialData?.betteruptimeHeartbeatUrl) showIntegrations.value = true
 
 async function handleSubmit() {
   errors.value = {}
@@ -232,10 +171,6 @@ async function handleSubmit() {
     ...form,
     headers: headersObj,
     body: form.body || null,
-    statuspageApiKey: form.statuspageApiKey || null,
-    statuspagePageId: form.statuspagePageId || null,
-    statuspageComponentId: form.statuspageComponentId || null,
-    betteruptimeHeartbeatUrl: form.betteruptimeHeartbeatUrl || null,
   })
   // Parent handles loading state reset
 }

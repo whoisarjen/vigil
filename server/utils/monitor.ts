@@ -1,6 +1,14 @@
 import pLimit from 'p-limit'
-import { eq, lte, and } from 'drizzle-orm'
-import { monitors, monitorResults, users } from '~~/server/db/schema'
+import { eq, lte, and, ne, inArray } from 'drizzle-orm'
+import {
+  monitors,
+  monitorResults,
+  statusPageMonitors,
+  statusPages,
+  incidents,
+  incidentUpdates,
+  incidentMonitors,
+} from '~~/server/db/schema'
 
 const CONCURRENCY_LIMIT = 5
 
@@ -64,6 +72,92 @@ async function checkMonitor(monitor: typeof monitors.$inferSelect): Promise<Chec
   }
 }
 
+function getImpactFromStatus(status: CheckResult['status']): 'minor' | 'major' {
+  if (status === 'error') return 'major'
+  return 'minor' // failure, timeout
+}
+
+function getIncidentTitle(monitorName: string, status: CheckResult['status']): string {
+  return `${monitorName} is ${status}`
+}
+
+async function createAutoIncidents(
+  db: ReturnType<typeof useDB>,
+  failedResults: CheckResult[],
+  activeMonitors: (typeof monitors.$inferSelect)[],
+) {
+  if (failedResults.length === 0) return
+
+  const monitorMap = new Map(activeMonitors.map((m) => [m.id, m]))
+  const failedMonitorIds = failedResults.map((r) => r.monitorId)
+
+  // Find which failed monitors are linked to status pages
+  const linkedPages = await db
+    .select({
+      monitorId: statusPageMonitors.monitorId,
+      statusPageId: statusPageMonitors.statusPageId,
+      userId: statusPages.userId,
+    })
+    .from(statusPageMonitors)
+    .innerJoin(statusPages, eq(statusPages.id, statusPageMonitors.statusPageId))
+    .where(inArray(statusPageMonitors.monitorId, failedMonitorIds))
+
+  if (linkedPages.length === 0) return
+
+  // For each linked monitor-statusPage pair, check if there's already an active incident
+  for (const link of linkedPages) {
+    const monitor = monitorMap.get(link.monitorId)
+    if (!monitor) continue
+
+    const failedResult = failedResults.find((r) => r.monitorId === link.monitorId)
+    if (!failedResult) continue
+
+    // Check for existing active incident for this monitor on this status page
+    const existingActiveIncidents = await db
+      .select({ id: incidents.id })
+      .from(incidents)
+      .innerJoin(incidentMonitors, eq(incidentMonitors.incidentId, incidents.id))
+      .where(
+        and(
+          eq(incidents.statusPageId, link.statusPageId),
+          ne(incidents.status, 'resolved'),
+          eq(incidentMonitors.monitorId, link.monitorId),
+        ),
+      )
+      .limit(1)
+
+    if (existingActiveIncidents.length > 0) continue
+
+    // Create auto-incident
+    const title = getIncidentTitle(monitor.name, failedResult.status)
+    const impact = getImpactFromStatus(failedResult.status)
+
+    const [incident] = await db
+      .insert(incidents)
+      .values({
+        userId: link.userId,
+        statusPageId: link.statusPageId,
+        title,
+        status: 'investigating',
+        impact,
+      })
+      .returning()
+
+    // Create initial update
+    await db.insert(incidentUpdates).values({
+      incidentId: incident.id,
+      message: `Automated alert: ${monitor.name} returned ${failedResult.status}. ${failedResult.errorMessage || ''}`.trim(),
+      status: 'investigating',
+    })
+
+    // Link the monitor to the incident
+    await db.insert(incidentMonitors).values({
+      incidentId: incident.id,
+      monitorId: link.monitorId,
+    })
+  }
+}
+
 export async function runAllChecks() {
   const db = useDB()
 
@@ -108,31 +202,15 @@ export async function runAllChecks() {
     )
   }
 
-  // 6. Send integration notifications (non-blocking)
-  for (let i = 0; i < activeMonitors.length; i++) {
-    const monitor = activeMonitors[i]
-    const result = processedResults[i]
+  // 6. Auto-create incidents for failed checks
+  const failedResults = processedResults.filter((r) => r.status !== 'success')
+  await createAutoIncidents(db, failedResults, activeMonitors)
 
-    // Statuspage.io
-    if (monitor.statuspageApiKey && monitor.statuspagePageId && monitor.statuspageComponentId) {
-      notifyStatuspage(monitor, result).catch((err) => {
-        console.error(`Statuspage notification failed for ${monitor.id}:`, err)
-      })
-    }
-
-    // BetterUptime
-    if (monitor.betteruptimeHeartbeatUrl) {
-      notifyBetteruptime(monitor, result).catch((err) => {
-        console.error(`BetterUptime notification failed for ${monitor.id}:`, err)
-      })
-    }
-  }
-
-  // 7. Cleanup old results (7 days for free users)
-  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+  // 7. Cleanup old results (90 days for uptime calculation)
+  const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000)
   await db
     .delete(monitorResults)
-    .where(lte(monitorResults.executedAt, sevenDaysAgo))
+    .where(lte(monitorResults.executedAt, ninetyDaysAgo))
 
   return { checked: processedResults.length, results: processedResults }
 }

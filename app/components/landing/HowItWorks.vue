@@ -40,8 +40,8 @@ const steps = [
   },
   {
     number: 3,
-    title: 'Get Notified Instantly',
-    description: 'Your Statuspage updates automatically. BetterUptime heartbeats keep your team informed.',
+    title: 'Share Your Status',
+    description: 'Your public status page updates in real-time. Users see current status, uptime history, and incident timeline.',
   },
 ]
 </script>

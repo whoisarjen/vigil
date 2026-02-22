@@ -7,27 +7,25 @@
       <!-- Pill Badge -->
       <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-accent/20 bg-accent/5 text-xs font-medium text-accent-light">
         <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-        Open Source Cron Monitoring
+        Open Source Status Page
       </div>
 
       <!-- Heading -->
       <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1]">
-        <span class="text-foreground">Monitor Your Crons</span>
+        <span class="text-foreground">Your Status Page</span>
         <br />
-        <span class="gradient-text">With Confidence</span>
+        <span class="gradient-text">Open Source & Free</span>
       </h1>
 
       <!-- Subheading -->
       <p class="text-lg sm:text-xl text-foreground-muted max-w-2xl mx-auto leading-relaxed">
-        Open source cron job monitoring that connects with Statuspage.io and BetterUptime.
-        Know the moment your scheduled tasks fail.
+        The open source alternative to Statuspage and BetterUptime. Monitor your services, track incidents, and share a beautiful public status page — all for free.
       </p>
 
       <!-- CTAs -->
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
         <VButton size="lg" @click="navigateTo('/sign-in')">
-          Start Monitoring — Free
-          <ArrowRight class="w-4 h-4" />
+          Start For Free
         </VButton>
         <VButton variant="outline" size="lg">
           <Github class="w-4 h-4" />
@@ -100,7 +98,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowRight, Github } from 'lucide-vue-next'
+import { Github } from 'lucide-vue-next'
 
 const mockStats = [
   { label: 'Monitors', value: '4 / 5', color: 'text-foreground' },

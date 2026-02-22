@@ -55,6 +55,27 @@ export const SCHEDULE_INTERVALS = [
 
 export const HTTP_METHODS: HttpMethod[] = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD']
 
+// ============================================
+// Incidents & Status Pages
+// ============================================
+
+export type IncidentStatus = 'investigating' | 'identified' | 'monitoring' | 'resolved'
+export type IncidentImpact = 'none' | 'minor' | 'major' | 'critical'
+
+export const INCIDENT_STATUSES: { value: IncidentStatus; label: string }[] = [
+  { value: 'investigating', label: 'Investigating' },
+  { value: 'identified', label: 'Identified' },
+  { value: 'monitoring', label: 'Monitoring' },
+  { value: 'resolved', label: 'Resolved' },
+]
+
+export const INCIDENT_IMPACTS: { value: IncidentImpact; label: string }[] = [
+  { value: 'none', label: 'None' },
+  { value: 'minor', label: 'Minor' },
+  { value: 'major', label: 'Major' },
+  { value: 'critical', label: 'Critical' },
+]
+
 export const TIMEOUT_OPTIONS = [
   { value: 1000, label: '1 second' },
   { value: 2000, label: '2 seconds' },

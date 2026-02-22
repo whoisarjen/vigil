@@ -28,7 +28,6 @@
           </ul>
           <VButton class="w-full" @click="navigateTo('/sign-in')">
             Get Started
-            <ArrowRight class="w-4 h-4" />
           </VButton>
         </div>
 
@@ -61,14 +60,14 @@
 </template>
 
 <script setup lang="ts">
-import { Check, ArrowRight } from 'lucide-vue-next'
+import { Check } from 'lucide-vue-next'
 
 const freePlanFeatures = [
   'Up to 5 monitors',
   '7-day history retention',
   '15-minute check intervals',
-  'Statuspage.io integration',
-  'BetterUptime integration',
+  'Public status page',
+  'Incident management',
   'Community support',
 ]
 
@@ -77,6 +76,7 @@ const proPlanFeatures = [
   '90-day history retention',
   '1-minute check intervals',
   'All Free features',
+  'Custom status page domain',
   'Priority support',
   'Slack & Discord notifications',
 ]

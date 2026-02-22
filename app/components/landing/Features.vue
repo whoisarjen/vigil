@@ -8,7 +8,7 @@
           <span class="gradient-text">stay informed</span>
         </h2>
         <p class="text-foreground-muted max-w-xl mx-auto text-lg">
-          Powerful cron monitoring with the integrations that matter.
+          Everything you need to keep users informed about your service health.
         </p>
       </div>
 
@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { Zap, Link, Heart, BarChart3, Clock, Code2 } from 'lucide-vue-next'
+import { Zap, Globe, AlertTriangle, BarChart3, Clock, Code2 } from 'lucide-vue-next'
 
 const features = [
   {
@@ -40,14 +40,14 @@ const features = [
     description: 'Know immediately when a cron job fails, times out, or returns an unexpected response.',
   },
   {
-    icon: Link,
-    title: 'Statuspage.io',
-    description: 'Automatically update your Statuspage components when monitors detect issues.',
+    icon: Globe,
+    title: 'Public Status Page',
+    description: 'Share a beautiful public status page with your users. Real-time service health, uptime history, and incident timeline.',
   },
   {
-    icon: Heart,
-    title: 'BetterUptime',
-    description: 'Send heartbeat pings to BetterUptime to keep your incident management in sync.',
+    icon: AlertTriangle,
+    title: 'Incident Management',
+    description: 'Create and track incidents with timeline updates. Automatic or manual incident creation when monitors detect issues.',
   },
   {
     icon: BarChart3,

@@ -31,7 +31,6 @@ export default defineEventHandler(async (event) => {
       ...parsed,
       userId: user.id,
       headers: parsed.headers || {},
-      betteruptimeHeartbeatUrl: parsed.betteruptimeHeartbeatUrl || null,
     })
     .returning()
 

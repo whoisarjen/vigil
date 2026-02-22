@@ -30,13 +30,15 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'Vigil — Open Source Cron Monitoring',
+      title: 'Vigil — Open Source Status Page & Uptime Monitoring',
       meta: [
-        { name: 'description', content: 'Monitor your cron jobs with Statuspage.io and BetterUptime integration. Free, open source, and self-hostable.' },
+        { name: 'description', content: 'The open source alternative to Statuspage and BetterUptime. Monitor endpoints, manage incidents, and share a beautiful public status page.' },
         { name: 'theme-color', content: '#0a0a1a' },
       ],
       link: [
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap' },

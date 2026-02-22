@@ -19,7 +19,6 @@
         </VButton>
         <VButton size="sm" @click="navigateTo('/sign-in')">
           Get Started
-          <ArrowRight class="w-3.5 h-3.5" />
         </VButton>
       </div>
 
@@ -53,7 +52,5 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowRight } from 'lucide-vue-next'
-
 const menuOpen = ref(false)
 </script>

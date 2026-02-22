@@ -16,6 +16,49 @@
     </DashboardHeader>
 
     <div class="p-6 lg:p-8 space-y-8">
+      <!-- Status Page Banner -->
+      <div v-if="statusPages?.length" class="glass-card p-5 flex items-center justify-between gap-4" style="transform: none">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-9 h-9 rounded-[var(--radius-md)] bg-accent/10 flex items-center justify-center shrink-0">
+            <Globe class="w-4.5 h-4.5 text-accent-light" />
+          </div>
+          <div class="min-w-0">
+            <p class="text-sm font-medium text-foreground">Your Status Page</p>
+            <p class="text-xs text-foreground-subtle truncate font-mono">
+              {{ statusPageUrl }}
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <a
+            :href="`/status/${(statusPages[0] as any).slug}`"
+            target="_blank"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-foreground-muted hover:text-foreground bg-surface-raised hover:bg-surface-overlay rounded-[var(--radius-sm)] transition-colors"
+          >
+            <ExternalLink class="w-3 h-3" />
+            View
+          </a>
+          <VButton size="sm" variant="outline" @click="navigateTo('/status-pages')">
+            Manage
+          </VButton>
+        </div>
+      </div>
+      <div
+        v-else-if="statusPagesStatus !== 'pending'"
+        class="glass-card p-5 flex items-center justify-between gap-4 border-dashed"
+        style="transform: none"
+      >
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-[var(--radius-md)] bg-surface-raised flex items-center justify-center shrink-0">
+            <Globe class="w-4.5 h-4.5 text-foreground-subtle" />
+          </div>
+          <p class="text-sm text-foreground-muted">Create a public status page to share system health with your users</p>
+        </div>
+        <VButton size="sm" variant="ghost" @click="navigateTo('/status-pages/new')">
+          Create
+        </VButton>
+      </div>
+
       <!-- Stats Cards -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 stagger">
         <div v-for="stat in stats" :key="stat.label" class="glass-card p-5 space-y-1" style="transform: none">
@@ -70,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import { Plus, Activity, Play } from 'lucide-vue-next'
+import { Plus, Activity, Play, Globe, ExternalLink } from 'lucide-vue-next'
 import type { MonitorWithLatest } from '~~/shared/types'
 import { PLANS } from '~~/shared/types'
 
@@ -87,6 +130,15 @@ const runningChecks = ref(false)
 
 const { data: monitorsData, status, refresh } = await useFetch('/api/monitors')
 const monitors = computed(() => (monitorsData.value as MonitorWithLatest[] | null) || [])
+
+const { data: statusPagesData, status: statusPagesStatus } = await useFetch('/api/status-pages')
+const statusPages = computed(() => (statusPagesData.value as any[] | null) || [])
+const statusPageUrl = computed(() => {
+  if (!statusPages.value.length) return ''
+  const slug = (statusPages.value[0] as any).slug
+  if (import.meta.client) return `${window.location.origin}/status/${slug}`
+  return `/status/${slug}`
+})
 
 async function handleRunChecks() {
   runningChecks.value = true

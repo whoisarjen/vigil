@@ -6,7 +6,7 @@
         <div class="space-y-3">
           <Logo />
           <p class="text-sm text-foreground-subtle max-w-xs">
-            Open source cron monitoring with Statuspage & BetterUptime integration.
+            The open source alternative to Statuspage and BetterUptime.
           </p>
         </div>
 
