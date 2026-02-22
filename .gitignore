@@ -35,3 +35,4 @@ drizzle/meta
 # Claude
 .claude/plans/
 .vercel
+.env*.local
