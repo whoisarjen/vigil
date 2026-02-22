@@ -2,6 +2,17 @@
   <div>
     <DashboardHeader>
       <template #title>Dashboard</template>
+      <template #actions>
+        <VButton
+          size="sm"
+          variant="outline"
+          :loading="runningChecks"
+          @click="handleRunChecks"
+        >
+          <Play class="w-3.5 h-3.5" />
+          Run Checks
+        </VButton>
+      </template>
     </DashboardHeader>
 
     <div class="p-6 lg:p-8 space-y-8">
@@ -59,7 +70,7 @@
 </template>
 
 <script setup lang="ts">
-import { Plus, Activity } from 'lucide-vue-next'
+import { Plus, Activity, Play } from 'lucide-vue-next'
 import type { MonitorWithLatest } from '~~/shared/types'
 import { PLANS } from '~~/shared/types'
 
@@ -71,8 +82,24 @@ definePageMeta({
 const { session } = useUserSession()
 const plan = computed(() => PLANS[session.value?.user?.plan as keyof typeof PLANS || 'free'])
 
-const { data: monitorsData, status } = await useFetch('/api/monitors')
+const { success, error } = useToast()
+const runningChecks = ref(false)
+
+const { data: monitorsData, status, refresh } = await useFetch('/api/monitors')
 const monitors = computed(() => (monitorsData.value as MonitorWithLatest[] | null) || [])
+
+async function handleRunChecks() {
+  runningChecks.value = true
+  try {
+    const result = await $fetch('/api/monitors/check', { method: 'POST' }) as any
+    success(`Checked ${result.checked} monitor${result.checked !== 1 ? 's' : ''}`)
+    await refresh()
+  } catch (err: any) {
+    error(err.data?.statusMessage || 'Failed to run checks')
+  } finally {
+    runningChecks.value = false
+  }
+}
 
 const stats = computed(() => {
   const total = monitors.value.length

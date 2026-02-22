@@ -59,7 +59,22 @@ Deploy to Vercel:
 1. Fork this repository
 2. Import into Vercel
 3. Set environment variables
-4. Deploy — cron jobs are configured automatically via `vercel.json`
+4. Push database schema: `npx drizzle-kit push`
+5. Deploy
+
+### Setting Up Frequent Checks
+
+Vercel's free tier only supports daily cron jobs. For more frequent monitoring (e.g. every 15 minutes), use a free external cron service:
+
+1. Go to [cron-job.org](https://cron-job.org) (free, supports 1-minute intervals)
+2. Create a new cron job with:
+   - **URL**: `https://your-domain.vercel.app/api/cron/check`
+   - **Schedule**: Every 15 minutes (or your preferred interval)
+   - **HTTP Method**: GET
+   - **Header**: `Authorization: Bearer YOUR_CRON_SECRET`
+3. That's it — your monitors will now be checked at the configured frequency
+
+You can also trigger checks manually from the dashboard using the **Run Checks** button.
 
 ## Contributing
 

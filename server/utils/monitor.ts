@@ -68,23 +68,16 @@ export async function runAllChecks() {
   const db = useDB()
 
   // 1. Fetch all enabled monitors
-  const allMonitors = await db
+  const activeMonitors = await db
     .select()
     .from(monitors)
     .where(eq(monitors.enabled, true))
-
-  // 2. Filter by schedule interval
-  const now = new Date()
-  const minutesSinceMidnight = now.getUTCHours() * 60 + now.getUTCMinutes()
-  const activeMonitors = allMonitors.filter((m) => {
-    return minutesSinceMidnight % m.scheduleInterval < 15
-  })
 
   if (activeMonitors.length === 0) {
     return { checked: 0, results: [] }
   }
 
-  // 3. Execute with concurrency limit
+  // 2. Execute with concurrency limit
   const limit = pLimit(CONCURRENCY_LIMIT)
   const settledResults = await Promise.allSettled(
     activeMonitors.map((monitor) => limit(() => checkMonitor(monitor))),
