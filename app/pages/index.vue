@@ -15,4 +15,10 @@
 definePageMeta({
   layout: 'default',
 })
+
+useHead({
+  script: [
+    { src: 'https://beamback.whoisarjen.com/widget.js', 'data-api-key': 'ak_SYq_uwihrIIGnNvPV2sS4', defer: true },
+  ],
+})
 </script>
